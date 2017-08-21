@@ -1,0 +1,31 @@
+<idea-plugin url="http://github.com/trubitsyn/VisibleForTesting">
+    <name>VisibleForTesting</name>
+
+    <vendor email="nikola.trubitsyn@gmail.com" url="http://www.github.com/trubitsyn">Nikola Trubitsyn</vendor>
+    <idea-version since-build="145"/>
+
+    <depends>com.intellij.modules.java</depends>
+
+    <description><![CDATA[
+      @VisibleForTesting annotation support for the IntelliJ platform.
+    ]]></description>
+
+    <change-notes><![CDATA[
+      First release
+    ]]>
+    </change-notes>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <intentionAction>
+            <className>io.github.trubitsyn.visiblefortesting.AnnotateClassMethodsIntention</className>
+            <category>Android</category>
+        </intentionAction>
+        <intentionAction>
+            <className>io.github.trubitsyn.visiblefortesting.AnnotateMethodIntention</className>
+        </intentionAction>
+        <intentionAction>
+            <className>io.github.trubitsyn.visiblefortesting.AnnotateMethodFromTestIntention</className>
+        </intentionAction>
+    </extensions>
+
+</idea-plugin>

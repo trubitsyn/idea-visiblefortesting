@@ -1,0 +1,8 @@
+class <spot>Foo</spot> {
+
+    protected void foo() {}
+
+    void bar() {}
+
+    private void baz() {}
+}
