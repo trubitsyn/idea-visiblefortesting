@@ -7,11 +7,14 @@
     <depends>com.intellij.modules.java</depends>
 
     <description><![CDATA[
-      @VisibleForTesting annotation support for the IntelliJ platform.
+      <a href="https://developer.android.com/reference/android/support/annotation/VisibleForTesting.html">@VisibleForTesting</a> annotation support for the IntelliJ platform.
+
+      <pre>android.support.annotation.VisibleForTesting</pre> must be accessible in order for plugin to work. Intention actions won't be shown otherwise.
+      Follow instructions <a href="https://developer.android.com/studio/write/annotations.html#adding-annotations">here</a> to add it as a dependency.
     ]]></description>
 
     <change-notes><![CDATA[
-      First release
+      Added note about required dependency.
     ]]>
     </change-notes>
 
