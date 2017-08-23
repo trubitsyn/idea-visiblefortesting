@@ -22,7 +22,9 @@ import com.intellij.ide.projectView.impl.ProjectRootsUtil
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.*
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiUtil
+import com.intellij.ui.popup.list.ListPopupImpl
 import com.intellij.util.IncorrectOperationException
 import org.jetbrains.annotations.NonNls
 
@@ -32,7 +34,9 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
     override fun getFamilyName() = CodeInsightBundle.message("intention.add.annotation.family")
 
     override fun isAvailable(project: Project, editor: Editor, element: PsiElement): Boolean {
-        if (!AnnotationApplier.isAnnotationAvailable(project)) {
+        val availableAnnotations = Annotations.getAvailable(project)
+
+        if (availableAnnotations.isEmpty()) {
             return false
         }
 
@@ -61,8 +65,22 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
         val call = element.parent.parent as PsiMethodCallExpression
 
         call.resolveMethod()?.let {
-            if (!AnnotationApplier.isAnnotated(it)) {
-                AnnotationApplier.addAnnotation(it)
+            val annotations = Annotations.getAvailable(project)
+
+            if (annotations.size == 1) {
+                if (!AnnotationApplier.isAnnotated(it, annotations[0])) {
+                    AnnotationApplier.addAnnotation(it, annotations[0])
+                }
+            } else {
+                val facade = JavaPsiFacade.getInstance(project)
+                val scope = GlobalSearchScope.allScope(project)
+                val psiClasses = annotations.map { facade.findClass(it.qualifiedName, scope) }
+
+                val importDialog = ChooseClassDialog(psiClasses, project, { psiClass ->
+                    AnnotationApplier.addAnnotation(it, annotations.first { it.qualifiedName == psiClass.qualifiedName})
+                })
+
+                ListPopupImpl(importDialog).showInBestPositionFor(editor)
             }
         }
     }

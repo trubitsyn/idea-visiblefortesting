@@ -21,10 +21,13 @@ import com.intellij.codeInsight.intention.BaseElementAtCaretIntentionAction
 import com.intellij.ide.projectView.impl.ProjectRootsUtil
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiJavaToken
 import com.intellij.psi.PsiMethod
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.ui.popup.list.ListPopupImpl
 import com.intellij.util.IncorrectOperationException
 import org.jetbrains.annotations.NonNls
 
@@ -37,7 +40,9 @@ class AnnotateMethodIntention : BaseElementAtCaretIntentionAction() {
     override fun getFamilyName() = CodeInsightBundle.message("intention.add.annotation.family")
 
     override fun isAvailable(project: Project, editor: Editor, psiElement: PsiElement): Boolean {
-        if (!AnnotationApplier.isAnnotationAvailable(project)) {
+        val availableAnnotations = Annotations.getAvailable(project)
+
+        if (availableAnnotations.isEmpty()) {
             return false
         }
 
@@ -47,7 +52,7 @@ class AnnotateMethodIntention : BaseElementAtCaretIntentionAction() {
 
         if (psiElement is PsiJavaToken && psiElement.parent is PsiMethod) {
             val method = psiElement.parent as PsiMethod
-            return AnnotationApplier.canAnnotate(method)
+            return availableAnnotations.any { AnnotationApplier.canAnnotate(method, it) }
         }
         return false
     }
@@ -55,7 +60,22 @@ class AnnotateMethodIntention : BaseElementAtCaretIntentionAction() {
     @Throws(IncorrectOperationException::class)
     override fun invoke(project: Project, editor: Editor, psiElement: PsiElement) {
         val method = PsiTreeUtil.getParentOfType(psiElement, PsiMethod::class.java, false) ?: return
-        AnnotationApplier.addAnnotation(method)
+
+        val annotations = Annotations.getAvailable(project)
+
+        if (annotations.size == 1) {
+            AnnotationApplier.addAnnotation(method, annotations[0])
+        } else {
+            val facade = JavaPsiFacade.getInstance(project)
+            val scope = GlobalSearchScope.allScope(project)
+            val psiClasses = annotations.map { facade.findClass(it.qualifiedName, scope) }
+
+            val importDialog = ChooseClassDialog(psiClasses, project, { psiClass ->
+                AnnotationApplier.addAnnotation(method, annotations.first { it.qualifiedName == psiClass.qualifiedName})
+            })
+
+            ListPopupImpl(importDialog).showInBestPositionFor(editor)
+        }
     }
 
     override fun startInWriteAction() = true

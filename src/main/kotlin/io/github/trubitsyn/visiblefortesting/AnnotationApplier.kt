@@ -16,57 +16,50 @@
 
 package io.github.trubitsyn.visiblefortesting
 
-import com.intellij.openapi.project.Project
-import com.intellij.psi.*
+import com.intellij.psi.PsiExpression
+import com.intellij.psi.PsiJavaFile
+import com.intellij.psi.PsiMethod
+import com.intellij.psi.PsiModifier
 import com.intellij.psi.impl.source.codeStyle.ImportHelper
-import com.intellij.psi.search.GlobalSearchScope
 
 object AnnotationApplier {
-    private val QUALIFIED_NAME = "android.support.annotation.VisibleForTesting"
-    private val NAME = "VisibleForTesting"
 
-    fun canAnnotate(method: PsiMethod): Boolean {
-        return !method.hasModifierProperty(PsiModifier.PUBLIC) && !isAnnotated(method)
+    fun canAnnotate(method: PsiMethod, annotation: Annotation): Boolean {
+        return !method.hasModifierProperty(PsiModifier.PUBLIC) && !isAnnotated(method, annotation)
     }
 
-    fun isAnnotated(method: PsiMethod): Boolean {
+    fun isAnnotated(method: PsiMethod, annotation: Annotation): Boolean {
         return method.modifierList.annotations
                 .asSequence()
                 .map { it.qualifiedName }
-                .any { NAME == it || QUALIFIED_NAME == it }
+                .any { annotation.name == it || annotation.qualifiedName == it }
     }
 
-    fun addAnnotation(method: PsiMethod) {
-        val annotation = method.modifierList.addAnnotation(NAME)
+    fun addAnnotation(method: PsiMethod, annotation: Annotation) {
+        val javaFile = method.containingFile as PsiJavaFile
 
-        if (!method.hasModifierProperty(PsiModifier.PRIVATE)) {
-            val value = JavaPsiFacade.getElementFactory(method.project)
-                    .createExpressionFromText("VisibleForTesting." + findModifier(method), method)
-            annotation.setDeclaredAttributeValue("otherwise", value)
+        if (!ImportHelper.isAlreadyImported(method.containingFile as PsiJavaFile, annotation.qualifiedName)) {
+            val clazz = Annotations.findClass(method.project, annotation)
+            javaFile.importClass(clazz)
         }
+
+        val imports = javaFile
+                .importList
+                ?.importStatements
+                ?.filter { (it.qualifiedName?.endsWith(annotation.name) ?: false) && it.qualifiedName != annotation.qualifiedName }
+
+        val desiredName = if (imports == null || imports.isEmpty()) {
+            annotation.name
+        } else {
+            annotation.qualifiedName
+        }
+
+        val psiAnnotation = method.modifierList.addAnnotation(desiredName)
+
+        annotation.buildAttributes(method, onAttributeBuilt = { name: String, value: PsiExpression ->
+            psiAnnotation.setDeclaredAttributeValue(name, value)
+        })
 
         method.modifierList.setModifierProperty(PsiModifier.PUBLIC, true)
-
-        if (!ImportHelper.isAlreadyImported(method.containingFile as PsiJavaFile, QUALIFIED_NAME)) {
-            val clazz = getAnnotationClass(method.project)
-            (method.containingFile as PsiJavaFile).importClass(clazz)
-        }
-    }
-
-    private fun findModifier(method: PsiMethod): String {
-        return when {
-            method.hasModifierProperty(PsiModifier.PRIVATE) -> "PRIVATE"
-            method.hasModifierProperty(PsiModifier.PACKAGE_LOCAL) -> "PACKAGE_PRIVATE"
-            method.hasModifierProperty(PsiModifier.PROTECTED) -> "PROTECTED"
-            else -> "PUBLIC"
-        }
-    }
-
-    fun isAnnotationAvailable(project: Project): Boolean {
-        return getAnnotationClass(project) != null
-    }
-
-    private fun getAnnotationClass(project: Project): PsiClass? {
-        return JavaPsiFacade.getInstance(project).findClass(QUALIFIED_NAME, GlobalSearchScope.allScope(project))
     }
 }

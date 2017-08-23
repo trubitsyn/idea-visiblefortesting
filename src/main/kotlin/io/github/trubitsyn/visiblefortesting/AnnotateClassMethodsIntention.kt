@@ -20,9 +20,12 @@ import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.ide.projectView.impl.ProjectRootsUtil
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiJavaToken
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.ui.popup.list.ListPopupImpl
 import com.intellij.util.IncorrectOperationException
 import org.jetbrains.annotations.NonNls
 
@@ -35,8 +38,10 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
     override fun getFamilyName() = text
 
     override fun isAvailable(project: Project, editor: Editor, psiElement: PsiElement): Boolean {
-        if (!AnnotationApplier.isAnnotationAvailable(project)) {
-            return false
+        val availableAnnotations = Annotations.getAvailable(project)
+
+        if (availableAnnotations.isEmpty()) {
+            return false;
         }
 
         if (ProjectRootsUtil.isInTestSource(psiElement.containingFile)) {
@@ -46,9 +51,11 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
         if (psiElement is PsiJavaToken && psiElement.parent is PsiClass) {
             val psiClass = psiElement.parent as PsiClass
 
-            return psiClass.methods
-                    .asSequence()
-                    .any { AnnotationApplier.canAnnotate(it) }
+            return psiClass.methods.asSequence().any { method ->
+                availableAnnotations.any { annotation ->
+                    AnnotationApplier.canAnnotate(method, annotation)
+                }
+            }
         }
         return false
     }
@@ -57,10 +64,28 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
     override fun invoke(project: Project, editor: Editor, psiElement: PsiElement) {
         val psiClass = psiElement.parent as PsiClass
 
-        psiClass.methods
-                .asSequence()
-                .filter { AnnotationApplier.canAnnotate(it) }
-                .forEach { AnnotationApplier.addAnnotation(it) }
+        val annotations = Annotations.getAvailable(project)
+
+        if (annotations.size == 1) {
+            psiClass.methods
+                    .asSequence()
+                    .filter { AnnotationApplier.canAnnotate(it, annotations[0]) }
+                    .forEach { AnnotationApplier.addAnnotation(it, annotations[0]) }
+        } else {
+            val facade = JavaPsiFacade.getInstance(project)
+            val scope = GlobalSearchScope.allScope(project)
+            val psiClasses = annotations.map { facade.findClass(it.qualifiedName, scope) }
+
+            val importDialog = ChooseClassDialog(psiClasses, project, { selectedClass ->
+                val annotation = annotations.first { it.qualifiedName == selectedClass.qualifiedName }
+                psiClass.methods
+                        .asSequence()
+                        .filter { AnnotationApplier.canAnnotate(it, annotation) }
+                        .forEach { AnnotationApplier.addAnnotation(it, annotation) }
+            })
+
+            ListPopupImpl(importDialog).showInBestPositionFor(editor)
+        }
     }
 
     override fun startInWriteAction() = true
