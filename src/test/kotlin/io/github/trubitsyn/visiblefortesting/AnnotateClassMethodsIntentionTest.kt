@@ -26,13 +26,26 @@ class AnnotateClassMethodsIntentionTest : LightCodeInsightFixtureTestCase() {
     override fun getTestDataPath() = "src/test/resources/AnnotateClassMethodsIntention"
 
     @Test
-    fun test() {
-        val text = File("src/test/resources/VisibleForTesting.java").readText()
+    fun testAndroid() {
+        runTest("src/test/resources/classes/AndroidVisibleForTesting.java",
+                "android/before.template.java",
+                "android/before.template.after.java")
+    }
+
+    @Test
+    fun testGuava() {
+        runTest("src/test/resources/classes/GuavaVisibleForTesting.java",
+                "guava/before.template.java",
+                "guava/before.template.after.java")
+    }
+
+    private fun runTest(targetClass: String, before: String, after: String) {
+        val text = File(targetClass).readText()
         myFixture.addClass(text)
-        myFixture.configureByFile("before.template.java")
+        myFixture.configureByFile(before)
         val action = AnnotateClassMethodsIntention()
         assertNotNull(action)
         myFixture.launchAction(action)
-        myFixture.checkResultByFile("before.template.after.java")
+        myFixture.checkResultByFile(after)
     }
 }
