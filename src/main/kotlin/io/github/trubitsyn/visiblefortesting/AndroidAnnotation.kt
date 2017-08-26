@@ -16,10 +16,8 @@
 
 package io.github.trubitsyn.visiblefortesting
 
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiExpression
-import com.intellij.psi.PsiMethod
-import com.intellij.psi.PsiModifier
+import com.intellij.openapi.project.Project
+import com.intellij.psi.*
 
 class AndroidAnnotation : Annotation {
     override val name = "VisibleForTesting"
@@ -27,12 +25,24 @@ class AndroidAnnotation : Annotation {
 
     override fun buildAttributes(method: PsiMethod, onAttributeBuilt: (attribute: String, value: PsiExpression) -> Unit) {
 
+        if (!areAttributesAvailable(method.project)) {
+            return
+        }
+
         if (!method.hasModifierProperty(PsiModifier.PRIVATE)) {
             val value = JavaPsiFacade.getElementFactory(method.project)
                     .createExpressionFromText("VisibleForTesting." + findModifier(method), method)
 
             onAttributeBuilt("otherwise", value)
         }
+    }
+
+    private fun areAttributesAvailable(project: Project): Boolean {
+        Annotations.findClass(project, this)?.let {
+            val method = JavaPsiFacade.getElementFactory(project).createMethod("otherwise", PsiType.INT)
+            return it.findMethodBySignature(method, false) != null
+        }
+        return false
     }
 
     private fun findModifier(method: PsiMethod): String {
