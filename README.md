@@ -1,6 +1,11 @@
 # VisibleForTesting
 
-[@VisibleForTesting](https://developer.android.com/reference/android/support/annotation/VisibleForTesting.html) annotation support for the IntelliJ platform.
+@VisibleForTesting annotation support for the IntelliJ platform.
+
+## Supported annotation types
+
+* [android.support.annotation.VisibleForTesting](https://developer.android.com/reference/android/support/annotation/VisibleForTesting.html)
+* [com.google.common.annotations.VisibleForTesting](https://google.github.io/guava/releases/19.0/api/docs/com/google/common/annotations/VisibleForTesting.html)
 
 # Motivation
 
@@ -10,23 +15,47 @@ Now you don't have to: plugin will do that for you.
 
 # Features
 
+## Choose from multiple annotations to import
+
+![Choose annotation](img/choose-annotation.gif)
+
 ## Annotate method
 
-![Annotate method](img/annotate-method.gif)
+### android.support.annotation
+
+![Annotate method](img/android/annotate-method.gif)
+
+### com.google.common.annotations
+
+![Annotate method](img/guava/annotate-method.gif)
 
 ## Annotate class methods
 
-![Annotate class methods](img/annotate-class-methods.gif)
+### android.support.annotation
 
-## Annotate from test
+![Annotate class methods](img/android/annotate-class-methods.gif)
 
-![Annotate method from test](img/annotate-method-from-test.gif)
+### com.google.common.annotations
+
+![Annotate class methods](img/guava/annotate-class-methods.gif)
+
+## Annotate method from test
+
+### android.support.annotation
+
+![Annotate method from test](img/android/annotate-method-from-test.gif)
+
+### com.google.common.annotations
+
+![Annotate method from test](img/guava/annotate-method-from-test.gif)
 
 # Prerequisites
 
-`android.support.annotation.VisibleForTesting` must be accessible in order for plugin to work. Intention actions won't be shown otherwise.
+The desired annotation type must be accessible in order for intention actions to be shown.
 
-Follow instructions [here](https://developer.android.com/studio/write/annotations.html#adding-annotations) to add it as a dependency.
+## android.support.annotation
+
+Metadata is only available since Support Library 25.0.0
 
 # Building from source
 
