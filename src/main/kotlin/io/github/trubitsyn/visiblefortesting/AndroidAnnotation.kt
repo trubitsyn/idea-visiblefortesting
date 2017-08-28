@@ -23,15 +23,16 @@ class AndroidAnnotation : Annotation {
     override val name = "VisibleForTesting"
     override val qualifiedName = "android.support.annotation.VisibleForTesting"
 
-    override fun buildAttributes(method: PsiMethod, onAttributeBuilt: (attribute: String, value: PsiExpression) -> Unit) {
+    override fun buildAttributes(method: PsiMethod, useQualifiedName: Boolean, onAttributeBuilt: (attribute: String, value: PsiExpression) -> Unit) {
 
         if (!areAttributesAvailable(method.project)) {
             return
         }
 
         if (!method.hasModifierProperty(PsiModifier.PRIVATE)) {
+            val name = if (useQualifiedName) qualifiedName else name
             val value = JavaPsiFacade.getElementFactory(method.project)
-                    .createExpressionFromText("VisibleForTesting." + findModifier(method), method)
+                    .createExpressionFromText(name + "." + findModifier(method), method)
 
             onAttributeBuilt("otherwise", value)
         }
