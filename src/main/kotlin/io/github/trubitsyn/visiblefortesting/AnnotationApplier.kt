@@ -48,15 +48,17 @@ object AnnotationApplier {
                 ?.importStatements
                 ?.filter { (it.qualifiedName?.endsWith(annotation.name) ?: false) && it.qualifiedName != annotation.qualifiedName }
 
-        val desiredName = if (imports == null || imports.isEmpty()) {
-            annotation.name
-        } else {
+        val useQualifiedName = imports != null && !imports.isEmpty();
+
+        val desiredName = if (useQualifiedName) {
             annotation.qualifiedName
+        } else {
+            annotation.name
         }
 
         val psiAnnotation = method.modifierList.addAnnotation(desiredName)
 
-        annotation.buildAttributes(method, onAttributeBuilt = { name: String, value: PsiExpression ->
+        annotation.buildAttributes(method, useQualifiedName, onAttributeBuilt = { name: String, value: PsiExpression ->
             psiAnnotation.setDeclaredAttributeValue(name, value)
         })
 

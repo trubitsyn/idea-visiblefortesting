@@ -23,5 +23,5 @@ interface Annotation {
     val name: String
     val qualifiedName: String
 
-    fun buildAttributes(method: PsiMethod, onAttributeBuilt: (attribute: String, value: PsiExpression) -> Unit) {}
+    fun buildAttributes(method: PsiMethod, useQualifiedName: Boolean, onAttributeBuilt: (attribute: String, value: PsiExpression) -> Unit) {}
 }
