@@ -49,7 +49,7 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
                 val javaFile = element.containingFile as PsiJavaFile
                 val currentPackage = JavaPsiFacade.getInstance(project).findPackage(javaFile.packageName) ?: return false
 
-                if (!PsiUtil.isAccessibleFromPackage(method, currentPackage)) {
+                if (!PsiUtil.isAccessibleFromPackage(method, currentPackage) && availableAnnotations.none { AnnotationApplier.isAnnotated(method, it) }) {
                     text = "Annotate '${method.containingClass?.name}.${method.name}' as @VisibleForTesting"
                     return true
                 }
