@@ -20,12 +20,9 @@ import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.ide.projectView.impl.ProjectRootsUtil
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiJavaToken
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.ui.popup.list.ListPopupImpl
 import com.intellij.util.IncorrectOperationException
 import org.jetbrains.annotations.NonNls
 
@@ -64,28 +61,12 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
     override fun invoke(project: Project, editor: Editor, psiElement: PsiElement) {
         val psiClass = psiElement.parent as PsiClass
 
-        val annotations = Annotations.getAvailable(project)
-
-        if (annotations.size == 1) {
+        AnnotationChooser.choose(project, editor, { annotation ->
             psiClass.methods
                     .asSequence()
-                    .filter { AnnotationApplier.canAnnotate(it, annotations[0]) }
-                    .forEach { AnnotationApplier.addAnnotation(it, annotations[0]) }
-        } else {
-            val facade = JavaPsiFacade.getInstance(project)
-            val scope = GlobalSearchScope.allScope(project)
-            val psiClasses = annotations.map { facade.findClass(it.qualifiedName, scope) }
-
-            val importDialog = ChooseClassDialog(psiClasses, project, { selectedClass ->
-                val annotation = annotations.first { it.qualifiedName == selectedClass.qualifiedName }
-                psiClass.methods
-                        .asSequence()
-                        .filter { AnnotationApplier.canAnnotate(it, annotation) }
-                        .forEach { AnnotationApplier.addAnnotation(it, annotation) }
-            })
-
-            ListPopupImpl(importDialog).showInBestPositionFor(editor)
-        }
+                    .filter { AnnotationApplier.canAnnotate(it, annotation) }
+                    .forEach { AnnotationApplier.addAnnotation(it, annotation) }
+        })
     }
 
     override fun startInWriteAction() = true
