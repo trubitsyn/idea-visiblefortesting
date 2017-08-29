@@ -19,6 +19,7 @@ package io.github.trubitsyn.visiblefortesting
 import com.intellij.openapi.project.Project
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiMethod
 import com.intellij.psi.search.GlobalSearchScope
 
 object Annotations {
@@ -26,6 +27,10 @@ object Annotations {
             AndroidAnnotation(),
             GuavaAnnotation()
     )
+
+    fun getApplicable(method: PsiMethod, annotations: List<Annotation>): List<Annotation> {
+        return annotations.filter { AnnotationApplier.canAnnotate(method, it) }
+    }
 
     fun getAvailable(project: Project) = annotations.filter { isAvailable(project, it) }
 
