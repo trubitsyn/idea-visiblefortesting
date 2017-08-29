@@ -49,7 +49,7 @@ class AnnotateMethodIntention : BaseElementAtCaretIntentionAction() {
 
         if (psiElement is PsiJavaToken && psiElement.parent is PsiMethod) {
             val method = psiElement.parent as PsiMethod
-            return availableAnnotations.any { AnnotationApplier.canAnnotate(method, it) }
+            return AnnotationApplier.canAnnotate(method, availableAnnotations)
         }
         return false
     }
@@ -58,7 +58,9 @@ class AnnotateMethodIntention : BaseElementAtCaretIntentionAction() {
     override fun invoke(project: Project, editor: Editor, psiElement: PsiElement) {
         val method = PsiTreeUtil.getParentOfType(psiElement, PsiMethod::class.java, false) ?: return
 
-        AnnotationChooser.choose(project, editor, {
+        val availableAnnotations = Annotations.getAvailable(project)
+
+        AnnotationChooser.choose(project, editor, availableAnnotations, {
             AnnotationApplier.addAnnotation(method, it)
         })
     }

@@ -24,6 +24,10 @@ import com.intellij.psi.impl.source.codeStyle.ImportHelper
 
 object AnnotationApplier {
 
+    fun canAnnotate(method: PsiMethod, annotations: List<Annotation>): Boolean {
+        return !method.hasModifierProperty(PsiModifier.PUBLIC) && annotations.none { isAnnotated(method, it) }
+    }
+
     fun canAnnotate(method: PsiMethod, annotation: Annotation): Boolean {
         return !method.hasModifierProperty(PsiModifier.PUBLIC) && !isAnnotated(method, annotation)
     }

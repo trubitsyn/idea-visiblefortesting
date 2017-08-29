@@ -49,9 +49,7 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
             val psiClass = psiElement.parent as PsiClass
 
             return psiClass.methods.asSequence().any { method ->
-                availableAnnotations.any { annotation ->
-                    AnnotationApplier.canAnnotate(method, annotation)
-                }
+                AnnotationApplier.canAnnotate(method, availableAnnotations)
             }
         }
         return false
@@ -61,10 +59,18 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
     override fun invoke(project: Project, editor: Editor, psiElement: PsiElement) {
         val psiClass = psiElement.parent as PsiClass
 
-        AnnotationChooser.choose(project, editor, { annotation ->
+        val availableAnnotations = Annotations.getAvailable(project)
+
+        val applicableAnnotations = psiClass.methods
+                .flatMap { Annotations.getApplicable(it, availableAnnotations) }
+                .toSet()
+                .sortedBy { it.qualifiedName }
+                .toList()
+
+        AnnotationChooser.choose(project, editor, applicableAnnotations, { annotation ->
             psiClass.methods
                     .asSequence()
-                    .filter { AnnotationApplier.canAnnotate(it, annotation) }
+                    .filter { AnnotationApplier.canAnnotate(it, applicableAnnotations) }
                     .forEach { AnnotationApplier.addAnnotation(it, annotation) }
         })
     }

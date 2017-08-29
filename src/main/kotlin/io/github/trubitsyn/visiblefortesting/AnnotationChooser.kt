@@ -24,8 +24,7 @@ import com.intellij.ui.popup.list.ListPopupImpl
 
 object AnnotationChooser {
 
-    fun choose(project: Project, editor: Editor, onChosen: (annotation: Annotation) -> Unit) {
-        val annotations = Annotations.getAvailable(project)
+    fun choose(project: Project, editor: Editor, annotations: List<Annotation>, onChosen: (annotation: Annotation) -> Unit) {
 
         if (annotations.size == 1) {
             onChosen(annotations[0])
