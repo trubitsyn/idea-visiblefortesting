@@ -26,6 +26,10 @@ object AnnotationChooser {
 
     fun choose(project: Project, editor: Editor, annotations: List<Annotation>, onChosen: (annotation: Annotation) -> Unit) {
 
+        if (annotations.isEmpty()) {
+            throw IllegalArgumentException("No annotations provided.")
+        }
+
         if (annotations.size == 1) {
             onChosen(annotations[0])
         } else {
