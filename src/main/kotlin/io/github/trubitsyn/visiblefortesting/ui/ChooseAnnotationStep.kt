@@ -22,7 +22,7 @@ import com.intellij.openapi.ui.popup.PopupStep
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.psi.PsiClass
 
-class ChooseAnnotationStep(psiClasses: List<PsiClass?>, private val project: Project, private val onSelected: (psiClass: PsiClass) -> Unit) : BaseListPopupStep<PsiClass>("Choose class", psiClasses) {
+class ChooseAnnotationStep(psiClasses: List<PsiClass?>, private val project: Project, private val onSelected: (psiClass: PsiClass) -> Unit) : BaseListPopupStep<PsiClass>("Choose annotation type", psiClasses) {
 
     override fun isAutoSelectionEnabled() = false
 
