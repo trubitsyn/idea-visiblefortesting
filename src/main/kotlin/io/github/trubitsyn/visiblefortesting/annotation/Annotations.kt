@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package io.github.trubitsyn.visiblefortesting
+package io.github.trubitsyn.visiblefortesting.annotation
 
 import com.intellij.openapi.project.Project
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiMethod
-import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.PsiModifier
+import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
+import io.github.trubitsyn.visiblefortesting.annotation.impl.AndroidAnnotation
+import io.github.trubitsyn.visiblefortesting.annotation.impl.GuavaAnnotation
 
 object Annotations {
     private val annotations = setOf<Annotation>(
@@ -28,17 +29,9 @@ object Annotations {
             GuavaAnnotation()
     )
 
-    fun getApplicable(method: PsiMethod, annotations: List<Annotation>): List<Annotation> {
-        return annotations.filter { AnnotationApplier.canAnnotate(method, it) }
-    }
+    fun available(project: Project) = annotations.filter { it.isAvailable(project) }
 
-    fun getAvailable(project: Project) = annotations.filter { isAvailable(project, it) }
-
-    fun isAvailable(project: Project, annotation: Annotation): Boolean {
-        return findClass(project, annotation) != null
-    }
-
-    fun findClass(project: Project, annotation: Annotation): PsiClass? {
-        return JavaPsiFacade.getInstance(project).findClass(annotation.qualifiedName, GlobalSearchScope.allScope(project))
+    fun areApplicableTo(method: PsiMethod, annotations: List<Annotation>): Boolean {
+        return !method.hasModifierProperty(PsiModifier.PUBLIC) && annotations.none { it.isAppliedTo(method) }
     }
 }

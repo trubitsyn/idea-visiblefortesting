@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.trubitsyn.visiblefortesting
+package io.github.trubitsyn.visiblefortesting.intention
 
 import com.intellij.codeInsight.CodeInsightBundle
 import com.intellij.codeInsight.intention.BaseElementAtCaretIntentionAction
@@ -26,6 +26,8 @@ import com.intellij.psi.PsiJavaToken
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.IncorrectOperationException
+import io.github.trubitsyn.visiblefortesting.annotation.Annotations
+import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationPopup
 import org.jetbrains.annotations.NonNls
 
 class AnnotateMethodIntention : BaseElementAtCaretIntentionAction() {
@@ -37,7 +39,7 @@ class AnnotateMethodIntention : BaseElementAtCaretIntentionAction() {
     override fun getFamilyName() = CodeInsightBundle.message("intention.add.annotation.family")
 
     override fun isAvailable(project: Project, editor: Editor, psiElement: PsiElement): Boolean {
-        val availableAnnotations = Annotations.getAvailable(project)
+        val availableAnnotations = Annotations.available(project)
 
         if (availableAnnotations.isEmpty()) {
             return false
@@ -49,7 +51,7 @@ class AnnotateMethodIntention : BaseElementAtCaretIntentionAction() {
 
         if (psiElement is PsiJavaToken && psiElement.parent is PsiMethod) {
             val method = psiElement.parent as PsiMethod
-            return AnnotationApplier.canAnnotate(method, availableAnnotations)
+            return Annotations.areApplicableTo(method, availableAnnotations)
         }
         return false
     }
@@ -58,10 +60,10 @@ class AnnotateMethodIntention : BaseElementAtCaretIntentionAction() {
     override fun invoke(project: Project, editor: Editor, psiElement: PsiElement) {
         val method = PsiTreeUtil.getParentOfType(psiElement, PsiMethod::class.java, false) ?: return
 
-        val availableAnnotations = Annotations.getAvailable(project)
+        val availableAnnotations = Annotations.available(project)
 
-        AnnotationChooser.choose(project, editor, availableAnnotations, {
-            AnnotationApplier.addAnnotation(method, it)
+        ChooseAnnotationPopup(project, editor).show(availableAnnotations, {
+            it.applyTo(method)
         })
     }
 

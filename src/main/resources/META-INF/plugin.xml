@@ -50,14 +50,14 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <intentionAction>
-            <className>io.github.trubitsyn.visiblefortesting.AnnotateClassMethodsIntention</className>
+            <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateClassMethodsIntention</className>
             <category>Android</category>
         </intentionAction>
         <intentionAction>
-            <className>io.github.trubitsyn.visiblefortesting.AnnotateMethodIntention</className>
+            <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateMethodIntention</className>
         </intentionAction>
         <intentionAction>
-            <className>io.github.trubitsyn.visiblefortesting.AnnotateMethodFromTestIntention</className>
+            <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateMethodFromTestIntention</className>
         </intentionAction>
     </extensions>
 

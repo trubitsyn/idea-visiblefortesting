@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.trubitsyn.visiblefortesting
+package io.github.trubitsyn.visiblefortesting.intention
 
 import com.intellij.codeInsight.CodeInsightBundle
 import com.intellij.codeInsight.intention.BaseElementAtCaretIntentionAction
@@ -24,6 +24,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.*
 import com.intellij.psi.util.PsiUtil
 import com.intellij.util.IncorrectOperationException
+import io.github.trubitsyn.visiblefortesting.annotation.Annotations
+import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationPopup
 import org.jetbrains.annotations.NonNls
 
 class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
@@ -32,7 +34,7 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
     override fun getFamilyName() = CodeInsightBundle.message("intention.add.annotation.family")
 
     override fun isAvailable(project: Project, editor: Editor, element: PsiElement): Boolean {
-        val availableAnnotations = Annotations.getAvailable(project)
+        val availableAnnotations = Annotations.available(project)
 
         if (availableAnnotations.isEmpty()) {
             return false
@@ -49,7 +51,7 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
                 val javaFile = element.containingFile as PsiJavaFile
                 val currentPackage = JavaPsiFacade.getInstance(project).findPackage(javaFile.packageName) ?: return false
 
-                if (!PsiUtil.isAccessibleFromPackage(method, currentPackage) && AnnotationApplier.canAnnotate(method, availableAnnotations)) {
+                if (!PsiUtil.isAccessibleFromPackage(method, currentPackage) && Annotations.areApplicableTo(method, availableAnnotations)) {
                     text = "Annotate '${method.containingClass?.name}.${method.name}' as @VisibleForTesting"
                     return true
                 }
@@ -63,10 +65,10 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
         val call = element.parent.parent as PsiMethodCallExpression
         val method = call.resolveMethod() ?: return
 
-        val availableAnnotations = Annotations.getAvailable(project)
+        val availableAnnotations = Annotations.available(project)
 
-        AnnotationChooser.choose(project, editor, availableAnnotations, {
-            AnnotationApplier.addAnnotation(method, it)
+        ChooseAnnotationPopup(project, editor).show(availableAnnotations, {
+            it.applyTo(method)
         })
     }
 

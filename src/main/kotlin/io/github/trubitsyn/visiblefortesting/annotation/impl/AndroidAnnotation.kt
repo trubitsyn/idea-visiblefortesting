@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-package io.github.trubitsyn.visiblefortesting
+package io.github.trubitsyn.visiblefortesting.annotation.impl
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.*
+import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
 
-class AndroidAnnotation : Annotation {
-    override val name = "VisibleForTesting"
-    override val qualifiedName = "android.support.annotation.VisibleForTesting"
+class AndroidAnnotation : Annotation(name = "VisibleForTesting", qualifiedName = "android.support.annotation.VisibleForTesting") {
+    private val otherwise = "otherwise"
 
-    override fun buildAttributes(method: PsiMethod, useQualifiedName: Boolean, onAttributeBuilt: (attribute: String, value: PsiExpression) -> Unit) {
+    override fun buildElements(method: PsiMethod, useQualifiedName: Boolean, onElementBuilt: (name: String, value: PsiExpression) -> Unit) {
 
-        if (!areAttributesAvailable(method.project)) {
+        if (!hasElements(method.project)) {
             return
         }
 
         if (!method.hasModifierProperty(PsiModifier.PRIVATE)) {
             val name = if (useQualifiedName) qualifiedName else name
-            val value = JavaPsiFacade.getElementFactory(method.project)
-                    .createExpressionFromText(name + "." + findModifier(method), method)
+            val text = "$name.${findModifier(method)}"
+            val value = buildElementValue(method, text)
 
-            onAttributeBuilt("otherwise", value)
+            onElementBuilt(otherwise, value)
         }
     }
 
-    private fun areAttributesAvailable(project: Project): Boolean {
-        Annotations.findClass(project, this)?.let {
-            val method = JavaPsiFacade.getElementFactory(project).createMethod("otherwise", PsiType.INT)
+    private fun hasElements(project: Project): Boolean {
+        findPsiClass(project)?.let {
+            val method = JavaPsiFacade.getElementFactory(project).createMethod(otherwise, PsiType.INT)
             return it.findMethodBySignature(method, false) != null
         }
         return false
