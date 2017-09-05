@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package io.github.trubitsyn.visiblefortesting
+package io.github.trubitsyn.visiblefortesting.ui
 
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.ui.popup.list.ListPopupImpl
+import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
 
-object AnnotationChooser {
+class ChooseAnnotationPopup(private val project: Project, private val editor: Editor) {
 
-    fun choose(project: Project, editor: Editor, annotations: List<Annotation>, onChosen: (annotation: Annotation) -> Unit) {
+    fun show(annotations: List<Annotation>, onChosen: (annotation: Annotation) -> Unit) {
 
         if (annotations.isEmpty()) {
             throw IllegalArgumentException("No annotations provided.")
@@ -33,12 +32,10 @@ object AnnotationChooser {
         if (annotations.size == 1) {
             onChosen(annotations[0])
         } else {
-            val facade = JavaPsiFacade.getInstance(project)
-            val scope = GlobalSearchScope.allScope(project)
-            val psiClasses = annotations.map { facade.findClass(it.qualifiedName, scope) }
+            val psiClasses = annotations.map { it.findPsiClass(project) }
 
-            val importDialog = ChooseClassDialog(psiClasses, project, { psiClass ->
-                val matchingAnnotation = annotations.first { it.qualifiedName == psiClass.qualifiedName}
+            val importDialog = ChooseAnnotationStep(psiClasses, project, { psiClass ->
+                val matchingAnnotation = annotations.first { it.qualifiedName == psiClass.qualifiedName }
                 onChosen(matchingAnnotation)
             })
 

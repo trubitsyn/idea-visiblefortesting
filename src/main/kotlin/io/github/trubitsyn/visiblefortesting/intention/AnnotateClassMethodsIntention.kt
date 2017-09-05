@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.trubitsyn.visiblefortesting
+package io.github.trubitsyn.visiblefortesting.intention
 
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.ide.projectView.impl.ProjectRootsUtil
@@ -24,6 +24,8 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiJavaToken
 import com.intellij.util.IncorrectOperationException
+import io.github.trubitsyn.visiblefortesting.annotation.Annotations
+import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationPopup
 import org.jetbrains.annotations.NonNls
 
 class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
@@ -35,10 +37,10 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
     override fun getFamilyName() = text
 
     override fun isAvailable(project: Project, editor: Editor, psiElement: PsiElement): Boolean {
-        val availableAnnotations = Annotations.getAvailable(project)
+        val availableAnnotations = Annotations.available(project)
 
         if (availableAnnotations.isEmpty()) {
-            return false;
+            return false
         }
 
         if (ProjectRootsUtil.isInTestSource(psiElement.containingFile)) {
@@ -48,9 +50,9 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
         if (psiElement is PsiJavaToken && psiElement.parent is PsiClass) {
             val psiClass = psiElement.parent as PsiClass
 
-            return psiClass.methods.asSequence().any { method ->
-                AnnotationApplier.canAnnotate(method, availableAnnotations)
-            }
+            return psiClass.methods
+                    .asSequence()
+                    .any { method -> Annotations.areApplicableTo(method, availableAnnotations) }
         }
         return false
     }
@@ -59,19 +61,19 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
     override fun invoke(project: Project, editor: Editor, psiElement: PsiElement) {
         val psiClass = psiElement.parent as PsiClass
 
-        val availableAnnotations = Annotations.getAvailable(project)
+        val availableAnnotations = Annotations.available(project)
 
         val applicableAnnotations = psiClass.methods
-                .flatMap { Annotations.getApplicable(it, availableAnnotations) }
+                .flatMap { method -> availableAnnotations.filter { it.isApplicableTo(method) } }
                 .toSet()
                 .sortedBy { it.qualifiedName }
                 .toList()
 
-        AnnotationChooser.choose(project, editor, applicableAnnotations, { annotation ->
+        ChooseAnnotationPopup(project, editor).show(applicableAnnotations, { annotation ->
             psiClass.methods
                     .asSequence()
-                    .filter { AnnotationApplier.canAnnotate(it, applicableAnnotations) }
-                    .forEach { AnnotationApplier.addAnnotation(it, annotation) }
+                    .filter { Annotations.areApplicableTo(it, applicableAnnotations) }
+                    .forEach { annotation.applyTo(it) }
         })
     }
 

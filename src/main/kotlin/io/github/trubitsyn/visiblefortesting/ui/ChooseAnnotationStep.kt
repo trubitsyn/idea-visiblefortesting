@@ -14,42 +14,37 @@
  * limitations under the License.
  */
 
-package io.github.trubitsyn.visiblefortesting
+package io.github.trubitsyn.visiblefortesting.ui
 
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.PopupStep
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.psi.PsiClass
-import javax.swing.Icon
 
-class ChooseClassDialog(psiClasses: List<PsiClass?>, val project: Project, val onSelected: (psiClass: PsiClass) -> Unit): BaseListPopupStep<PsiClass>("Choose class", psiClasses) {
+class ChooseAnnotationStep(psiClasses: List<PsiClass?>, private val project: Project, private val onSelected: (psiClass: PsiClass) -> Unit) : BaseListPopupStep<PsiClass>("Choose class", psiClasses) {
 
     override fun isAutoSelectionEnabled() = false
 
     override fun isSpeedSearchEnabled() = true
 
     override fun onChosen(selectedValue: PsiClass?, finalChoice: Boolean): PopupStep<*>? {
-        if (selectedValue == null) {
-            return PopupStep.FINAL_CHOICE
-        }
+        return when {
+            selectedValue == null -> PopupStep.FINAL_CHOICE
 
-        if (finalChoice) {
-            return doFinalStep {
+            finalChoice -> doFinalStep {
                 WriteCommandAction.runWriteCommandAction(project, {
                     onSelected(selectedValue)
                 })
             }
-        }
 
-        return super.onChosen(selectedValue, finalChoice)
+            else -> super.onChosen(selectedValue, finalChoice)
+        }
     }
 
     override fun hasSubstep(selectedValue: PsiClass?) = false
 
     override fun getTextFor(value: PsiClass?) = value!!.qualifiedName!!
 
-    override fun getIconFor(value: PsiClass?): Icon? {
-        return value!!.getIcon(0)
-    }
+    override fun getIconFor(value: PsiClass?) = value!!.getIcon(0)
 }

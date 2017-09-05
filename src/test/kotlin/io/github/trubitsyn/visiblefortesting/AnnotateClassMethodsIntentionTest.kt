@@ -17,6 +17,7 @@
 package io.github.trubitsyn.visiblefortesting
 
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
+import io.github.trubitsyn.visiblefortesting.intention.AnnotateClassMethodsIntention
 import org.junit.Test
 import java.io.File
 

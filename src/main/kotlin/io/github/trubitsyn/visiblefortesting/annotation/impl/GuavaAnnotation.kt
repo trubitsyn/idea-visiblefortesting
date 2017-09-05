@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-package io.github.trubitsyn.visiblefortesting
+package io.github.trubitsyn.visiblefortesting.annotation.impl
 
-import com.intellij.psi.PsiExpression
-import com.intellij.psi.PsiMethod
+import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
 
-interface Annotation {
-    val name: String
-    val qualifiedName: String
-
-    fun buildAttributes(method: PsiMethod, useQualifiedName: Boolean, onAttributeBuilt: (attribute: String, value: PsiExpression) -> Unit) {}
-}
+class GuavaAnnotation : Annotation(name = "VisibleForTesting", qualifiedName = "com.google.common.annotations.VisibleForTesting")
