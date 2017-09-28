@@ -39,17 +39,17 @@ class AnnotateMethodIntention : BaseElementAtCaretIntentionAction() {
     override fun getFamilyName() = CodeInsightBundle.message("intention.add.annotation.family")
 
     override fun isAvailable(project: Project, editor: Editor, psiElement: PsiElement): Boolean {
-        val availableAnnotations = Annotations.available(project)
-
-        if (availableAnnotations.isEmpty()) {
-            return false
-        }
-
         if (ProjectRootsUtil.isInTestSource(psiElement.containingFile)) {
             return false
         }
 
         if (psiElement is PsiJavaToken && psiElement.parent is PsiMethod) {
+            val availableAnnotations = Annotations.available(project)
+
+            if (availableAnnotations.isEmpty()) {
+                return false
+            }
+
             val method = psiElement.parent as PsiMethod
             return Annotations.areApplicableTo(method, availableAnnotations)
         }
