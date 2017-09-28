@@ -34,12 +34,6 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
     override fun getFamilyName() = CodeInsightBundle.message("intention.add.annotation.family")
 
     override fun isAvailable(project: Project, editor: Editor, element: PsiElement): Boolean {
-        val availableAnnotations = Annotations.available(project)
-
-        if (availableAnnotations.isEmpty()) {
-            return false
-        }
-
         if (!ProjectRootsUtil.isInTestSource(element.containingFile)) {
             return false
         }
@@ -51,9 +45,17 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
                 val javaFile = element.containingFile as PsiJavaFile
                 val currentPackage = JavaPsiFacade.getInstance(project).findPackage(javaFile.packageName) ?: return false
 
-                if (!PsiUtil.isAccessibleFromPackage(method, currentPackage) && Annotations.areApplicableTo(method, availableAnnotations)) {
-                    text = "Annotate '${method.containingClass?.name}.${method.name}' as @VisibleForTesting"
-                    return true
+                if (!PsiUtil.isAccessibleFromPackage(method, currentPackage)) {
+                    val availableAnnotations = Annotations.available(project)
+
+                    if (availableAnnotations.isEmpty()) {
+                        return false
+                    }
+
+                    if (Annotations.areApplicableTo(method, availableAnnotations)) {
+                        text = "Annotate '${method.containingClass?.name}.${method.name}' as @VisibleForTesting"
+                        return true
+                    }
                 }
             }
         }

@@ -37,19 +37,18 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
     override fun getFamilyName() = text
 
     override fun isAvailable(project: Project, editor: Editor, psiElement: PsiElement): Boolean {
-        val availableAnnotations = Annotations.available(project)
-
-        if (availableAnnotations.isEmpty()) {
-            return false
-        }
-
         if (ProjectRootsUtil.isInTestSource(psiElement.containingFile)) {
             return false
         }
 
         if (psiElement is PsiJavaToken && psiElement.parent is PsiClass) {
-            val psiClass = psiElement.parent as PsiClass
+            val availableAnnotations = Annotations.available(project)
 
+            if (availableAnnotations.isEmpty()) {
+                return false
+            }
+
+            val psiClass = psiElement.parent as PsiClass
             return psiClass.methods
                     .asSequence()
                     .any { method -> Annotations.areApplicableTo(method, availableAnnotations) }
