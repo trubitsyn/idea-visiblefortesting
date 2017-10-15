@@ -69,7 +69,7 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
 
         val availableAnnotations = Annotations.available(project)
 
-        ChooseAnnotationPopup(project, editor).show(availableAnnotations, {
+        ChooseAnnotationPopup(editor).show(availableAnnotations, {
             it.applyTo(method)
         })
     }

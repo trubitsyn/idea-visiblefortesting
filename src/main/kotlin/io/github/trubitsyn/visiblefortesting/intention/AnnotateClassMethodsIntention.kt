@@ -68,7 +68,7 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
                 .sortedBy { it.qualifiedName }
                 .toList()
 
-        ChooseAnnotationPopup(project, editor).show(applicableAnnotations, { annotation ->
+        ChooseAnnotationPopup(editor).show(applicableAnnotations, { annotation ->
             psiClass.methods
                     .asSequence()
                     .filter { Annotations.areApplicableTo(it, applicableAnnotations) }

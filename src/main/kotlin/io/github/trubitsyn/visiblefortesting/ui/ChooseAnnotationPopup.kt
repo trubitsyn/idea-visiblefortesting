@@ -21,7 +21,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.popup.list.ListPopupImpl
 import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
 
-class ChooseAnnotationPopup(private val project: Project, private val editor: Editor) {
+class ChooseAnnotationPopup(private val editor: Editor) {
 
     fun show(annotations: List<Annotation>, onChosen: (annotation: Annotation) -> Unit) {
 
@@ -32,6 +32,7 @@ class ChooseAnnotationPopup(private val project: Project, private val editor: Ed
         if (annotations.size == 1) {
             onChosen(annotations[0])
         } else {
+            val project = editor.project!!
             val psiClasses = annotations.map { it.findPsiClass(project) }
 
             val importDialog = ChooseAnnotationStep(psiClasses, project, { psiClass ->
