@@ -61,6 +61,10 @@
         <intentionAction>
             <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateMethodFromTestIntention</className>
         </intentionAction>
+
+        <intentionAction>
+            <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateKtFunctionIntention</className>
+        </intentionAction>
     </extensions>
 
 </idea-plugin>
