@@ -26,10 +26,12 @@ import com.intellij.psi.PsiJavaToken
 import com.intellij.util.IncorrectOperationException
 import io.github.trubitsyn.visiblefortesting.annotable.PsiAnnotableUtil
 import io.github.trubitsyn.visiblefortesting.annotation.Annotations
+import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
 import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationPopup
 import org.jetbrains.annotations.NonNls
 
 class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
+    var availableAnnotations: List<Annotation> = emptyList()
 
     @NonNls
     override fun getText() = "Annotate methods as @VisibleForTesting"
@@ -43,7 +45,9 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
         }
 
         if (psiElement is PsiJavaToken && psiElement.parent is PsiClass) {
-            val availableAnnotations = Annotations.available(project)
+            if (availableAnnotations.isEmpty()) {
+                availableAnnotations = Annotations.available(project)
+            }
 
             if (availableAnnotations.isEmpty()) {
                 return false
@@ -60,8 +64,6 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
     @Throws(IncorrectOperationException::class)
     override fun invoke(project: Project, editor: Editor, psiElement: PsiElement) {
         val psiClass = psiElement.parent as PsiClass
-
-        val availableAnnotations = Annotations.available(project)
 
         val applicableAnnotations = psiClass.methods
                 .flatMap { method -> availableAnnotations.filter { PsiAnnotableUtil.canAddAnnotation(method, it) } }
