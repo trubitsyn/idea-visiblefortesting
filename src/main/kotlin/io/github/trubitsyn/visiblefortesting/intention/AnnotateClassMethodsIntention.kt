@@ -24,6 +24,7 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiJavaToken
 import com.intellij.util.IncorrectOperationException
+import io.github.trubitsyn.visiblefortesting.annotable.PsiAnnotableUtil
 import io.github.trubitsyn.visiblefortesting.annotation.Annotations
 import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationPopup
 import org.jetbrains.annotations.NonNls
@@ -63,7 +64,7 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
         val availableAnnotations = Annotations.available(project)
 
         val applicableAnnotations = psiClass.methods
-                .flatMap { method -> availableAnnotations.filter { it.isApplicableTo(method) } }
+                .flatMap { method -> availableAnnotations.filter { PsiAnnotableUtil.canAddAnnotation(method, it) } }
                 .toSet()
                 .sortedBy { it.qualifiedName }
                 .toList()
@@ -72,7 +73,7 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
             psiClass.methods
                     .asSequence()
                     .filter { Annotations.areApplicableTo(it, applicableAnnotations) }
-                    .forEach { annotation.applyTo(it) }
+                    .forEach { PsiAnnotableUtil.addAnnotation(it, annotation) }
         })
     }
 

@@ -24,6 +24,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.*
 import com.intellij.psi.util.PsiUtil
 import com.intellij.util.IncorrectOperationException
+import io.github.trubitsyn.visiblefortesting.annotable.PsiAnnotableUtil
 import io.github.trubitsyn.visiblefortesting.annotation.Annotations
 import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationPopup
 import org.jetbrains.annotations.NonNls
@@ -70,7 +71,7 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
         val availableAnnotations = Annotations.available(project)
 
         ChooseAnnotationPopup(editor).show(availableAnnotations, {
-            it.applyTo(method)
+            PsiAnnotableUtil.addAnnotation(method, it)
         })
     }
 
