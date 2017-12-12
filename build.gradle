@@ -20,6 +20,7 @@ apply plugin: 'org.jetbrains.intellij'
 apply plugin: 'java'
 
 intellij {
+    plugins = ['Kotlin']
     version 'IC-2017.1'
     updateSinceUntilBuild false
 }

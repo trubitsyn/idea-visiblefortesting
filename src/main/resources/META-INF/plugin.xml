@@ -5,6 +5,7 @@
     <idea-version since-build="145"/>
 
     <depends>com.intellij.modules.java</depends>
+    <depends>org.jetbrains.kotlin</depends>
 
     <description><![CDATA[
         <p>@VisibleForTesting annotation support for the IntelliJ platform.</p>
