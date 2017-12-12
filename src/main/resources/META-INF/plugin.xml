@@ -63,6 +63,10 @@
         </intentionAction>
 
         <intentionAction>
+            <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateKtClassMethodsIntention</className>
+            <category>Android</category>
+        </intentionAction>
+        <intentionAction>
             <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateKtFunctionIntention</className>
         </intentionAction>
     </extensions>
