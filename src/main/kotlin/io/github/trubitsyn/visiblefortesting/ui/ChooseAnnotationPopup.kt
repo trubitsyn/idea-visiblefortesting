@@ -17,7 +17,6 @@
 package io.github.trubitsyn.visiblefortesting.ui
 
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.project.Project
 import com.intellij.ui.popup.list.ListPopupImpl
 import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
 
@@ -33,7 +32,7 @@ class ChooseAnnotationPopup(private val editor: Editor) {
             onChosen(annotations[0])
         } else {
             val project = editor.project!!
-            val psiClasses = annotations.map { it.findPsiClass(project) }
+            val psiClasses = annotations.map { it.resolveClass(project) }
 
             val importDialog = ChooseAnnotationStep(psiClasses, project, { psiClass ->
                 val matchingAnnotation = annotations.first { it.qualifiedName == psiClass.qualifiedName }

@@ -17,59 +17,15 @@
 package io.github.trubitsyn.visiblefortesting.annotation.base
 
 import com.intellij.openapi.project.Project
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.codeStyle.ImportHelper
+import com.intellij.psi.JavaPsiFacade
+import com.intellij.psi.PsiClass
 import com.intellij.psi.search.GlobalSearchScope
 
 abstract class Annotation(val name: String, val qualifiedName: String) {
 
-    protected open fun buildElements(method: PsiMethod, useQualifiedName: Boolean, onElementBuilt: (name: String, value: PsiExpression) -> Unit) {}
+    fun isAvailable(project: Project) = resolveClass(project) != null
 
-    protected fun buildElementValue(method: PsiMethod, text: String): PsiExpression {
-        return JavaPsiFacade.getElementFactory(method.project).createExpressionFromText(text, method)
-    }
-
-    fun isAvailable(project: Project) = findPsiClass(project) != null
-
-    fun isAppliedTo(method: PsiMethod): Boolean {
-        return method.modifierList.annotations
-                .asSequence()
-                .map { it.qualifiedName }
-                .any { name == it || qualifiedName == it }
-    }
-
-    fun isApplicableTo(method: PsiMethod): Boolean {
-        return !method.hasModifierProperty(PsiModifier.PUBLIC) && !isAppliedTo(method)
-    }
-
-    fun applyTo(method: PsiMethod) {
-        val javaFile = method.containingFile as PsiJavaFile
-
-        if (!ImportHelper.isAlreadyImported(javaFile, qualifiedName)) {
-            findPsiClass(method.project).let {
-                javaFile.importClass(it)
-            }
-        }
-
-        val imports = javaFile
-                .importList
-                ?.importStatements
-                ?.filter { (it.qualifiedName?.endsWith(name) == true) && it.qualifiedName != qualifiedName }
-
-        val useQualifiedName = imports != null && !imports.isEmpty()
-
-        val desiredName = if (useQualifiedName) qualifiedName else name
-
-        val psiAnnotation = method.modifierList.addAnnotation(desiredName)
-
-        buildElements(method, useQualifiedName, { name, value ->
-            psiAnnotation.setDeclaredAttributeValue(name, value)
-        })
-
-        method.modifierList.setModifierProperty(PsiModifier.PUBLIC, true)
-    }
-
-    fun findPsiClass(project: Project): PsiClass? {
+    fun resolveClass(project: Project): PsiClass? {
         return JavaPsiFacade.getInstance(project)
                 .findClass(qualifiedName, GlobalSearchScope.allScope(project))
     }
