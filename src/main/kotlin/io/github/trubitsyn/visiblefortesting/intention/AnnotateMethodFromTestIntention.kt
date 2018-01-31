@@ -24,42 +24,52 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.*
 import com.intellij.psi.util.PsiUtil
 import com.intellij.util.IncorrectOperationException
+import io.github.trubitsyn.visiblefortesting.annotable.PsiAnnotableUtil
 import io.github.trubitsyn.visiblefortesting.annotation.Annotations
+import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
 import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationPopup
 import org.jetbrains.annotations.NonNls
 
 class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
+    var availableAnnotations: List<Annotation> = emptyList()
 
     @NonNls
     override fun getFamilyName() = CodeInsightBundle.message("intention.add.annotation.family")
 
     override fun isAvailable(project: Project, editor: Editor, element: PsiElement): Boolean {
+
         if (!ProjectRootsUtil.isInTestSource(element.containingFile)) {
             return false
         }
 
-        if (element is PsiIdentifier && element.parent is PsiReferenceExpression) {
-            if (element.parent.parent is PsiMethodCallExpression) {
-                val call = element.parent.parent as PsiMethodCallExpression
-                val method = call.resolveMethod() ?: return false
-                val javaFile = element.containingFile as PsiJavaFile
-                val currentPackage = JavaPsiFacade.getInstance(project).findPackage(javaFile.packageName) ?: return false
+        if (isMethodCallExpression(element)) {
+            val call = element.parent.parent as PsiMethodCallExpression
+            val method = call.resolveMethod() ?: return false
+            val javaFile = element.containingFile as PsiJavaFile
+            val currentPackage = JavaPsiFacade.getInstance(project).findPackage(javaFile.packageName) ?: return false
 
-                if (!PsiUtil.isAccessibleFromPackage(method, currentPackage)) {
-                    val availableAnnotations = Annotations.available(project)
+            if (!PsiUtil.isAccessibleFromPackage(method, currentPackage)) {
+                if (availableAnnotations.isEmpty()) {
+                    availableAnnotations = Annotations.available(project)
+                }
 
-                    if (availableAnnotations.isEmpty()) {
-                        return false
-                    }
+                if (availableAnnotations.isEmpty()) {
+                    return false
+                }
 
-                    if (Annotations.areApplicableTo(method, availableAnnotations)) {
-                        text = "Annotate '${method.containingClass?.name}.${method.name}' as @VisibleForTesting"
-                        return true
-                    }
+                if (Annotations.areApplicableTo(method, availableAnnotations)) {
+                    text = "Annotate '${method.containingClass?.name}.${method.name}' as @VisibleForTesting"
+                    return true
                 }
             }
         }
         return false
+    }
+
+    private fun isMethodCallExpression(element: PsiElement): Boolean {
+        return (element is PsiIdentifier &&
+                element.parent is PsiReferenceExpression &&
+                element.parent.parent is PsiMethodCallExpression)
     }
 
     @Throws(IncorrectOperationException::class)
@@ -67,10 +77,8 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
         val call = element.parent.parent as PsiMethodCallExpression
         val method = call.resolveMethod() ?: return
 
-        val availableAnnotations = Annotations.available(project)
-
         ChooseAnnotationPopup(editor).show(availableAnnotations, {
-            it.applyTo(method)
+            PsiAnnotableUtil.addAnnotation(method, it)
         })
     }
 

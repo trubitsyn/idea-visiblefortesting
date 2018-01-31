@@ -17,41 +17,40 @@
 package io.github.trubitsyn.visiblefortesting.annotation.impl
 
 import com.intellij.openapi.project.Project
-import com.intellij.psi.*
+import com.intellij.psi.JavaPsiFacade
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiType
 import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
+import io.github.trubitsyn.visiblefortesting.visibility.Visibility
 
 class AndroidAnnotation : Annotation(name = "VisibleForTesting", qualifiedName = "android.support.annotation.VisibleForTesting") {
     private val otherwise = "otherwise"
 
-    override fun buildElements(method: PsiMethod, useQualifiedName: Boolean, onElementBuilt: (name: String, value: PsiExpression) -> Unit) {
-
-        if (!hasElements(method.project)) {
-            return
+    fun innerText(visibility: Visibility, name: String, context: PsiElement): Pair<String, String>? {
+        if (!hasElements(context.project)) {
+            return null
         }
 
-        if (!method.hasModifierProperty(PsiModifier.PRIVATE)) {
-            val name = if (useQualifiedName) qualifiedName else name
-            val text = "$name.${findModifier(method)}"
-            val value = buildElementValue(method, text)
-
-            onElementBuilt(otherwise, value)
+        if (!visibility.isPrivate) {
+            val value = "$name.${findModifier(visibility)}"
+            return Pair(otherwise, value)
         }
+        return null
     }
 
     private fun hasElements(project: Project): Boolean {
-        findPsiClass(project)?.let {
+        resolveClass(project)?.let {
             val method = JavaPsiFacade.getElementFactory(project).createMethod(otherwise, PsiType.INT)
             return it.findMethodBySignature(method, false) != null
         }
         return false
     }
 
-    private fun findModifier(method: PsiMethod): String {
+    private fun findModifier(visibility: Visibility): String {
         return when {
-            method.hasModifierProperty(PsiModifier.PRIVATE) -> "PRIVATE"
-            method.hasModifierProperty(PsiModifier.PACKAGE_LOCAL) -> "PACKAGE_PRIVATE"
-            method.hasModifierProperty(PsiModifier.PROTECTED) -> "PROTECTED"
-            else -> "PUBLIC"
+            visibility.isPackageLocal -> "PACKAGE_PRIVATE"
+            visibility.isProtected -> "PROTECTED"
+            else -> throw IllegalArgumentException()
         }
     }
 }

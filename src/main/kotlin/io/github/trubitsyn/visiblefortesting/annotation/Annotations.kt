@@ -18,10 +18,12 @@ package io.github.trubitsyn.visiblefortesting.annotation
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiMethod
-import com.intellij.psi.PsiModifier
+import io.github.trubitsyn.visiblefortesting.annotable.KtAnnotableUtil
+import io.github.trubitsyn.visiblefortesting.annotable.PsiAnnotableUtil
 import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
 import io.github.trubitsyn.visiblefortesting.annotation.impl.AndroidAnnotation
 import io.github.trubitsyn.visiblefortesting.annotation.impl.GuavaAnnotation
+import org.jetbrains.kotlin.psi.KtFunction
 
 object Annotations {
     private val annotations = setOf<Annotation>(
@@ -32,6 +34,10 @@ object Annotations {
     fun available(project: Project) = annotations.filter { it.isAvailable(project) }
 
     fun areApplicableTo(method: PsiMethod, annotations: List<Annotation>): Boolean {
-        return !method.hasModifierProperty(PsiModifier.PUBLIC) && annotations.none { it.isAppliedTo(method) }
+        return annotations.any { PsiAnnotableUtil.canAddAnnotation(method, it) }
+    }
+
+    fun areApplicableTo(function: KtFunction, annotations: List<Annotation>): Boolean {
+        return annotations.any { KtAnnotableUtil.canAddAnnotation(function, it) }
     }
 }

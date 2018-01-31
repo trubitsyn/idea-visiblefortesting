@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package io.github.trubitsyn.visiblefortesting.annotation.base
+package io.github.trubitsyn.visiblefortesting.visibility
 
-import com.intellij.openapi.project.Project
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiClass
-import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.PsiMethod
+import com.intellij.psi.PsiModifier
 
-abstract class Annotation(val name: String, val qualifiedName: String) {
-
-    fun isAvailable(project: Project) = resolveClass(project) != null
-
-    fun resolveClass(project: Project): PsiClass? {
-        return JavaPsiFacade.getInstance(project)
-                .findClass(qualifiedName, GlobalSearchScope.allScope(project))
-    }
+class PsiMethodVisibility(val method: PsiMethod) : Visibility {
+    override val isProtected: Boolean
+        get() = method.hasModifierProperty(PsiModifier.PROTECTED)
+    override val isPackageLocal: Boolean
+        get() = method.hasModifierProperty(PsiModifier.PACKAGE_LOCAL)
+    override val isPrivate: Boolean
+        get() = method.hasModifierProperty(PsiModifier.PRIVATE)
 }

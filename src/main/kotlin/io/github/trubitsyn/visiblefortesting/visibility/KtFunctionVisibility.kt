@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package io.github.trubitsyn.visiblefortesting.annotation.base
+package io.github.trubitsyn.visiblefortesting.visibility
 
-import com.intellij.openapi.project.Project
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiClass
-import com.intellij.psi.search.GlobalSearchScope
+import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.psi.KtFunction
 
-abstract class Annotation(val name: String, val qualifiedName: String) {
-
-    fun isAvailable(project: Project) = resolveClass(project) != null
-
-    fun resolveClass(project: Project): PsiClass? {
-        return JavaPsiFacade.getInstance(project)
-                .findClass(qualifiedName, GlobalSearchScope.allScope(project))
-    }
+class KtFunctionVisibility(val function: KtFunction) : Visibility {
+    override val isProtected: Boolean
+        get() = function.hasModifier(KtTokens.PROTECTED_KEYWORD)
+    override val isPackageLocal: Boolean
+        get() = function.hasModifier(KtTokens.INTERNAL_KEYWORD)
+    override val isPrivate: Boolean
+        get() = function.hasModifier(KtTokens.PRIVATE_KEYWORD)
 }

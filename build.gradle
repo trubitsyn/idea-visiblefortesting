@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.1.51'
+    ext.kotlin_version = '1.2.21'
 
     repositories {
         mavenCentral()
@@ -20,6 +20,7 @@ apply plugin: 'org.jetbrains.intellij'
 apply plugin: 'java'
 
 intellij {
+    plugins = ['Kotlin']
     version 'IC-2017.1'
     updateSinceUntilBuild false
 }
