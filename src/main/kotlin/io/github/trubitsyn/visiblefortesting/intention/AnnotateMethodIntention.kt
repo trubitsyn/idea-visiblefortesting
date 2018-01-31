@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Nikola Trubitsyn
+ * Copyright 2017, 2018 Nikola Trubitsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,13 @@ import com.intellij.psi.PsiMethod
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.IncorrectOperationException
 import io.github.trubitsyn.visiblefortesting.annotable.PsiAnnotableUtil
-import io.github.trubitsyn.visiblefortesting.annotation.Annotations
-import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
-import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationPopup
+import io.github.trubitsyn.visiblefortesting.annotation.AnnotationTypes
+import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
+import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationTypePopup
 import org.jetbrains.annotations.NonNls
 
 class AnnotateMethodIntention : BaseElementAtCaretIntentionAction() {
-    var availableAnnotations: List<Annotation> = emptyList()
+    var availableAnnotationTypes: List<AnnotationType> = emptyList()
 
     @NonNls
     override fun getText() = "Annotate as @VisibleForTesting"
@@ -47,16 +47,16 @@ class AnnotateMethodIntention : BaseElementAtCaretIntentionAction() {
         }
 
         if (psiElement is PsiJavaToken && psiElement.parent is PsiMethod) {
-            if (availableAnnotations.isEmpty()) {
-                availableAnnotations = Annotations.available(project)
+            if (availableAnnotationTypes.isEmpty()) {
+                availableAnnotationTypes = AnnotationTypes.available(project)
             }
 
-            if (availableAnnotations.isEmpty()) {
+            if (availableAnnotationTypes.isEmpty()) {
                 return false
             }
 
             val method = psiElement.parent as PsiMethod
-            return Annotations.areApplicableTo(method, availableAnnotations)
+            return AnnotationTypes.areApplicableTo(method, availableAnnotationTypes)
         }
         return false
     }
@@ -65,7 +65,7 @@ class AnnotateMethodIntention : BaseElementAtCaretIntentionAction() {
     override fun invoke(project: Project, editor: Editor, psiElement: PsiElement) {
         val method = PsiTreeUtil.getParentOfType(psiElement, PsiMethod::class.java, false) ?: return
 
-        ChooseAnnotationPopup(editor).show(availableAnnotations, {
+        ChooseAnnotationTypePopup(editor).show(availableAnnotationTypes, {
             PsiAnnotableUtil.addAnnotation(method, it)
         })
     }

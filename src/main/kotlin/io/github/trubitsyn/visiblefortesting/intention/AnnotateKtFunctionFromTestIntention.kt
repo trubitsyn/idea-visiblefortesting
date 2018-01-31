@@ -21,9 +21,9 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiPackage
 import com.intellij.psi.search.GlobalSearchScope
 import io.github.trubitsyn.visiblefortesting.annotable.KtAnnotableUtil
-import io.github.trubitsyn.visiblefortesting.annotation.Annotations
-import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
-import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationPopup
+import io.github.trubitsyn.visiblefortesting.annotation.AnnotationTypes
+import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
+import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationTypePopup
 import org.jetbrains.kotlin.idea.intentions.SelfTargetingIntention
 import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
 import org.jetbrains.kotlin.idea.references.mainReference
@@ -38,7 +38,7 @@ class AnnotateKtFunctionFromTestIntention : SelfTargetingIntention<KtReferenceEx
         KtReferenceExpression::class.java,
         "Annotate as @VisibleForTesting"
 ) {
-    var availableAnnotations: List<Annotation> = emptyList()
+    var availableAnnotationTypes: List<AnnotationType> = emptyList()
 
     override fun isApplicableTo(element: KtReferenceExpression, caretOffset: Int): Boolean {
         if (!ProjectRootsUtil.isInTestSource(element.containingFile)) {
@@ -56,15 +56,15 @@ class AnnotateKtFunctionFromTestIntention : SelfTargetingIntention<KtReferenceEx
         //    return false
         //}
 
-        if (availableAnnotations.isEmpty()) {
-            availableAnnotations = Annotations.available(element.project)
+        if (availableAnnotationTypes.isEmpty()) {
+            availableAnnotationTypes = AnnotationTypes.available(element.project)
         }
 
-        if (availableAnnotations.isEmpty()) {
+        if (availableAnnotationTypes.isEmpty()) {
             return false
         }
 
-        return Annotations.areApplicableTo(function, availableAnnotations)
+        return AnnotationTypes.areApplicableTo(function, availableAnnotationTypes)
     }
 
     private fun isAccessibleFromTestPackage(element: KtElement, function: KtFunction): Boolean {
@@ -103,7 +103,7 @@ class AnnotateKtFunctionFromTestIntention : SelfTargetingIntention<KtReferenceEx
     override fun applyTo(element: KtReferenceExpression, editor: Editor?) {
         val function = element.mainReference.resolve() as KtFunction
 
-        ChooseAnnotationPopup(editor!!).show(availableAnnotations) {
+        ChooseAnnotationTypePopup(editor!!).show(availableAnnotationTypes) {
             KtAnnotableUtil.addAnnotation(function, it)
         }
     }

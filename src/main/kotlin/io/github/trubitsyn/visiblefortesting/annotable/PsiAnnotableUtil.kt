@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Nikola Trubitsyn
+ * Copyright 2017, 2018 Nikola Trubitsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,32 +20,32 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiJavaFile
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiModifier
-import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
-import io.github.trubitsyn.visiblefortesting.annotation.impl.AndroidAnnotation
+import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
+import io.github.trubitsyn.visiblefortesting.annotation.impl.AndroidAnnotationType
 import io.github.trubitsyn.visiblefortesting.extension.smartImportClass
 import io.github.trubitsyn.visiblefortesting.visibility.PsiMethodVisibility
 
 object PsiAnnotableUtil {
 
-    fun canAddAnnotation(method: PsiMethod, annotation: Annotation): Boolean {
-        return !method.hasModifierProperty(PsiModifier.PUBLIC) && !hasAnnotation(method, annotation)
+    fun canAddAnnotation(method: PsiMethod, annotationType: AnnotationType): Boolean {
+        return !method.hasModifierProperty(PsiModifier.PUBLIC) && !hasAnnotation(method, annotationType)
     }
 
-    fun hasAnnotation(method: PsiMethod, annotation: Annotation): Boolean {
+    fun hasAnnotation(method: PsiMethod, annotationType: AnnotationType): Boolean {
         return method.modifierList.annotations
                 .asSequence()
                 .map { it.qualifiedName }
-                .any { annotation.name == it || annotation.qualifiedName == it }
+                .any { annotationType.name == it || annotationType.qualifiedName == it }
     }
 
-    fun addAnnotation(method: PsiMethod, annotation: Annotation) {
+    fun addAnnotation(method: PsiMethod, annotationType: AnnotationType) {
         val javaFile = method.containingFile as PsiJavaFile
-        val name = javaFile.smartImportClass(annotation.qualifiedName, annotation.resolveClass(method.project))
+        val name = javaFile.smartImportClass(annotationType.qualifiedName, annotationType.resolveClass(method.project))
 
-        method.modifierList.addAnnotation(annotation.qualifiedName).let { psi ->
-            if (annotation is AndroidAnnotation) {
+        method.modifierList.addAnnotation(annotationType.qualifiedName).let { psi ->
+            if (annotationType is AndroidAnnotationType) {
                 val visibility = PsiMethodVisibility(method)
-                annotation.innerText(visibility, name, method)?.let {
+                annotationType.innerText(visibility, name, method)?.let {
                     if (it.second.isNotEmpty()) {
                         val value = JavaPsiFacade.getElementFactory(method.project)
                                 .createExpressionFromText(it.second, method)

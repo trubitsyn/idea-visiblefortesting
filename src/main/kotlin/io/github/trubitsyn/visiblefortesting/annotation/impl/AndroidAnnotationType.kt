@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Nikola Trubitsyn
+ * Copyright 2017, 2018 Nikola Trubitsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiType
-import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
+import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
 import io.github.trubitsyn.visiblefortesting.visibility.Visibility
 
-class AndroidAnnotation : Annotation(name = "VisibleForTesting", qualifiedName = "android.support.annotation.VisibleForTesting") {
+class AndroidAnnotationType : AnnotationType(name = "VisibleForTesting", qualifiedName = "android.support.annotation.VisibleForTesting") {
     private val otherwise = "otherwise"
 
     fun innerText(visibility: Visibility, name: String, context: PsiElement): Pair<String, String>? {

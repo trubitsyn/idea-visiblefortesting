@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Nikola Trubitsyn
+ * Copyright 2017, 2018 Nikola Trubitsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import com.intellij.openapi.ui.popup.PopupStep
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.psi.PsiClass
 
-class ChooseAnnotationStep(psiClasses: List<PsiClass?>, private val project: Project, private val onSelected: (psiClass: PsiClass) -> Unit) : BaseListPopupStep<PsiClass>("Choose annotation type", psiClasses) {
+class ChooseAnnotationTypeStep(psiClasses: List<PsiClass?>, private val project: Project, private val onSelected: (psiClass: PsiClass) -> Unit) : BaseListPopupStep<PsiClass>("Choose annotation type", psiClasses) {
 
     override fun isAutoSelectionEnabled() = false
 

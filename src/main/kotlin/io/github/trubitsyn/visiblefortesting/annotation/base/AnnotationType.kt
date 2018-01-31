@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Nikola Trubitsyn
+ * Copyright 2017, 2018 Nikola Trubitsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.search.GlobalSearchScope
 
-abstract class Annotation(val name: String, val qualifiedName: String) {
+abstract class AnnotationType(val name: String, val qualifiedName: String) {
 
     fun isAvailable(project: Project) = resolveClass(project) != null
 

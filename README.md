@@ -23,9 +23,9 @@ Annotation elements are available since Support Library `25.0.0` and won't be ge
 
 # Features
 
-## Choose from multiple annotations to import
+## Choose from multiple annotation types to import
 
-![Choose annotation](img/choose-annotation.gif)
+![Choose annotation type](img/choose-annotation-type.gif)
 
 ## Annotate method
 
@@ -66,7 +66,7 @@ Annotation elements are available since Support Library `25.0.0` and won't be ge
 # LICENSE
 
 ```
-Copyright 2017 Nikola Trubitsyn
+Copyright 2017, 2018 Nikola Trubitsyn
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

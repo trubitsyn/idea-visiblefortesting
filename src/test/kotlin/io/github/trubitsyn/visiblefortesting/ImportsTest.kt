@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Nikola Trubitsyn
+ * Copyright 2017, 2018 Nikola Trubitsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package io.github.trubitsyn.visiblefortesting
 
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
-import io.github.trubitsyn.visiblefortesting.annotation.impl.AndroidAnnotation
-import io.github.trubitsyn.visiblefortesting.annotation.impl.GuavaAnnotation
+import io.github.trubitsyn.visiblefortesting.annotation.impl.AndroidAnnotationType
+import io.github.trubitsyn.visiblefortesting.annotation.impl.GuavaAnnotationType
 import io.github.trubitsyn.visiblefortesting.intention.AnnotateKtFunctionIntention
 import io.github.trubitsyn.visiblefortesting.intention.AnnotateMethodIntention
 import org.junit.Test
@@ -39,7 +39,7 @@ class ImportsTest : LightCodeInsightFixtureTestCase() {
         myFixture.configureByFile("java/imported_guava.before.java")
         val action = AnnotateMethodIntention()
         LightCodeInsightFixtureTestCase.assertNotNull(action)
-        action.availableAnnotations = listOf(AndroidAnnotation())
+        action.availableAnnotationTypes = listOf(AndroidAnnotationType())
         myFixture.launchAction(action)
         myFixture.checkResultByFile("java/imported_guava.after.java")
     }
@@ -55,7 +55,7 @@ class ImportsTest : LightCodeInsightFixtureTestCase() {
         myFixture.configureByFile("java/imported_android.before.java")
         val action = AnnotateMethodIntention()
         LightCodeInsightFixtureTestCase.assertNotNull(action)
-        action.availableAnnotations = listOf(GuavaAnnotation())
+        action.availableAnnotationTypes = listOf(GuavaAnnotationType())
         myFixture.launchAction(action)
         myFixture.checkResultByFile("java/imported_android.after.java")
     }
@@ -71,7 +71,7 @@ class ImportsTest : LightCodeInsightFixtureTestCase() {
         myFixture.configureByFile("kotlin/imported_guava.before.kt")
         val action = AnnotateKtFunctionIntention()
         LightCodeInsightFixtureTestCase.assertNotNull(action)
-        action.availableAnnotations = listOf(AndroidAnnotation())
+        action.availableAnnotationTypes = listOf(AndroidAnnotationType())
         myFixture.launchAction(action)
         myFixture.checkResultByFile("kotlin/imported_guava.after.kt")
     }
@@ -87,7 +87,7 @@ class ImportsTest : LightCodeInsightFixtureTestCase() {
         myFixture.configureByFile("kotlin/imported_android.before.kt")
         val action = AnnotateKtFunctionIntention()
         LightCodeInsightFixtureTestCase.assertNotNull(action)
-        action.availableAnnotations = listOf(GuavaAnnotation())
+        action.availableAnnotationTypes = listOf(GuavaAnnotationType())
         myFixture.launchAction(action)
         myFixture.checkResultByFile("kotlin/imported_android.after.kt")
     }
