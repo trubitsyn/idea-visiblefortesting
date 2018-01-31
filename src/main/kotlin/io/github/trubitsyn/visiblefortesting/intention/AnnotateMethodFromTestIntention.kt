@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Nikola Trubitsyn
+ * Copyright 2017, 2018 Nikola Trubitsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,13 @@ import com.intellij.psi.*
 import com.intellij.psi.util.PsiUtil
 import com.intellij.util.IncorrectOperationException
 import io.github.trubitsyn.visiblefortesting.annotable.PsiAnnotableUtil
-import io.github.trubitsyn.visiblefortesting.annotation.Annotations
-import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
-import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationPopup
+import io.github.trubitsyn.visiblefortesting.annotation.AnnotationTypes
+import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
+import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationTypePopup
 import org.jetbrains.annotations.NonNls
 
 class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
-    var availableAnnotations: List<Annotation> = emptyList()
+    var availableAnnotationTypes: List<AnnotationType> = emptyList()
 
     @NonNls
     override fun getFamilyName() = CodeInsightBundle.message("intention.add.annotation.family")
@@ -49,15 +49,15 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
             val currentPackage = JavaPsiFacade.getInstance(project).findPackage(javaFile.packageName) ?: return false
 
             if (!PsiUtil.isAccessibleFromPackage(method, currentPackage)) {
-                if (availableAnnotations.isEmpty()) {
-                    availableAnnotations = Annotations.available(project)
+                if (availableAnnotationTypes.isEmpty()) {
+                    availableAnnotationTypes = AnnotationTypes.available(project)
                 }
 
-                if (availableAnnotations.isEmpty()) {
+                if (availableAnnotationTypes.isEmpty()) {
                     return false
                 }
 
-                if (Annotations.areApplicableTo(method, availableAnnotations)) {
+                if (AnnotationTypes.areApplicableTo(method, availableAnnotationTypes)) {
                     text = "Annotate '${method.containingClass?.name}.${method.name}' as @VisibleForTesting"
                     return true
                 }
@@ -77,7 +77,7 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
         val call = element.parent.parent as PsiMethodCallExpression
         val method = call.resolveMethod() ?: return
 
-        ChooseAnnotationPopup(editor).show(availableAnnotations, {
+        ChooseAnnotationTypePopup(editor).show(availableAnnotationTypes, {
             PsiAnnotableUtil.addAnnotation(method, it)
         })
     }

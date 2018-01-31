@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Nikola Trubitsyn
+ * Copyright 2017, 2018 Nikola Trubitsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import com.intellij.codeInsight.intention.LowPriorityAction
 import com.intellij.ide.projectView.impl.ProjectRootsUtil
 import com.intellij.openapi.editor.Editor
 import io.github.trubitsyn.visiblefortesting.annotable.KtAnnotableUtil
-import io.github.trubitsyn.visiblefortesting.annotation.Annotations
-import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
-import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationPopup
+import io.github.trubitsyn.visiblefortesting.annotation.AnnotationTypes
+import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
+import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationTypePopup
 import org.jetbrains.kotlin.idea.intentions.SelfTargetingIntention
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFunction
@@ -31,40 +31,40 @@ class AnnotateKtClassMethodsIntention : SelfTargetingIntention<KtClass>(
         KtClass::class.java,
         "Annotate methods as @VisibleForTesting"
 ), LowPriorityAction {
-    var availableAnnotations: List<Annotation> = emptyList()
+    var availableAnnotationTypes: List<AnnotationType> = emptyList()
 
     override fun isApplicableTo(element: KtClass, caretOffset: Int): Boolean {
         if (ProjectRootsUtil.isInTestSource(element.containingFile)) {
             return false
         }
 
-        if (availableAnnotations.isEmpty()) {
-            availableAnnotations = Annotations.available(element.project)
+        if (availableAnnotationTypes.isEmpty()) {
+            availableAnnotationTypes = AnnotationTypes.available(element.project)
         }
 
-        if (availableAnnotations.isEmpty()) {
+        if (availableAnnotationTypes.isEmpty()) {
             return false
         }
 
         val functions = element.declarations.filterIsInstance(KtFunction::class.java)
         return functions
                 .asSequence()
-                .any { func -> Annotations.areApplicableTo(func, availableAnnotations) }
+                .any { func -> AnnotationTypes.areApplicableTo(func, availableAnnotationTypes) }
     }
 
     override fun applyTo(element: KtClass, editor: Editor?) {
         val functions = element.declarations.filterIsInstance(KtFunction::class.java)
 
         val applicableAnnotations = functions
-                .flatMap { func -> availableAnnotations.filter { KtAnnotableUtil.canAddAnnotation(func, it) } }
+                .flatMap { func -> availableAnnotationTypes.filter { KtAnnotableUtil.canAddAnnotation(func, it) } }
                 .toSet()
                 .sortedBy { it.qualifiedName }
                 .toList()
 
-        ChooseAnnotationPopup(editor!!).show(availableAnnotations, { annotation ->
+        ChooseAnnotationTypePopup(editor!!).show(availableAnnotationTypes, { annotation ->
             functions
                     .asSequence()
-                    .filter { Annotations.areApplicableTo(it, applicableAnnotations) }
+                    .filter { AnnotationTypes.areApplicableTo(it, applicableAnnotations) }
                     .forEach { KtAnnotableUtil.addAnnotation(it, annotation) }
         })
     }

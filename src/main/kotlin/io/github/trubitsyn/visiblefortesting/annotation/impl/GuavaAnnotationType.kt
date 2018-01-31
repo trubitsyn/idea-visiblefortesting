@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Nikola Trubitsyn
+ * Copyright 2017, 2018 Nikola Trubitsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,6 @@
 
 package io.github.trubitsyn.visiblefortesting.annotation.impl
 
-import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
+import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
 
-class GuavaAnnotation : Annotation(name = "VisibleForTesting", qualifiedName = "com.google.common.annotations.VisibleForTesting")
+class GuavaAnnotationType : AnnotationType(name = "VisibleForTesting", qualifiedName = "com.google.common.annotations.VisibleForTesting")

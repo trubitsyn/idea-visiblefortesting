@@ -17,8 +17,8 @@
 package io.github.trubitsyn.visiblefortesting.annotable
 
 import com.intellij.psi.codeStyle.CodeStyleManager
-import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
-import io.github.trubitsyn.visiblefortesting.annotation.impl.AndroidAnnotation
+import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
+import io.github.trubitsyn.visiblefortesting.annotation.impl.AndroidAnnotationType
 import io.github.trubitsyn.visiblefortesting.extension.smartImportClass
 import io.github.trubitsyn.visiblefortesting.visibility.KtFunctionVisibility
 import org.jetbrains.kotlin.idea.util.addAnnotation
@@ -30,12 +30,12 @@ import org.jetbrains.kotlin.psi.psiUtil.containingClass
 
 object KtAnnotableUtil {
 
-    fun hasAnnotation(function: KtFunction, annotation: Annotation): Boolean {
-        return function.findAnnotation(FqName(annotation.qualifiedName)) != null
+    fun hasAnnotation(function: KtFunction, annotationType: AnnotationType): Boolean {
+        return function.findAnnotation(FqName(annotationType.qualifiedName)) != null
     }
 
-    fun canAddAnnotation(function: KtFunction, annotation: Annotation): Boolean {
-        return (!isPublic(function) || isProtectedInFinalClass(function)) && !hasAnnotation(function, annotation)
+    fun canAddAnnotation(function: KtFunction, annotationType: AnnotationType): Boolean {
+        return (!isPublic(function) || isProtectedInFinalClass(function)) && !hasAnnotation(function, annotationType)
     }
 
     private fun isPublic(function: KtFunction): Boolean {
@@ -59,20 +59,20 @@ object KtAnnotableUtil {
         return false
     }
 
-    fun addAnnotation(function: KtFunction, annotation: Annotation) {
+    fun addAnnotation(function: KtFunction, annotationType: AnnotationType) {
         val file = function.containingKtFile
-        val name = file.smartImportClass(annotation.qualifiedName)
+        val name = file.smartImportClass(annotationType.qualifiedName)
 
         var text: String? = null
-        if (annotation is AndroidAnnotation) {
+        if (annotationType is AndroidAnnotationType) {
             val visibility = KtFunctionVisibility(function)
-            val element = annotation.innerText(visibility, name, function)
+            val element = annotationType.innerText(visibility, name, function)
             text = if (element != null) "${element.first}=${element.second}" else null
         }
 
         function.addModifier(KtTokens.PUBLIC_KEYWORD)
         function.removeModifier(KtTokens.PUBLIC_KEYWORD)
-        function.addAnnotation(FqName(annotation.qualifiedName), text)
+        function.addAnnotation(FqName(annotationType.qualifiedName), text)
 
         val leftBrace = function.bodyExpression!!.prevSibling
         CodeStyleManager.getInstance(function.project).reformat(leftBrace)

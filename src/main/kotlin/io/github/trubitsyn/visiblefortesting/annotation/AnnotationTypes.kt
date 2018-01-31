@@ -20,24 +20,24 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiMethod
 import io.github.trubitsyn.visiblefortesting.annotable.KtAnnotableUtil
 import io.github.trubitsyn.visiblefortesting.annotable.PsiAnnotableUtil
-import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
-import io.github.trubitsyn.visiblefortesting.annotation.impl.AndroidAnnotation
-import io.github.trubitsyn.visiblefortesting.annotation.impl.GuavaAnnotation
+import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
+import io.github.trubitsyn.visiblefortesting.annotation.impl.AndroidAnnotationType
+import io.github.trubitsyn.visiblefortesting.annotation.impl.GuavaAnnotationType
 import org.jetbrains.kotlin.psi.KtFunction
 
-object Annotations {
+object AnnotationTypes {
     private val annotations = setOf(
-            AndroidAnnotation(),
-            GuavaAnnotation()
+            AndroidAnnotationType(),
+            GuavaAnnotationType()
     )
 
     fun available(project: Project) = annotations.filter { it.isAvailable(project) }
 
-    fun areApplicableTo(method: PsiMethod, annotations: List<Annotation>): Boolean {
-        return annotations.any { PsiAnnotableUtil.canAddAnnotation(method, it) }
+    fun areApplicableTo(method: PsiMethod, annotationTypes: List<AnnotationType>): Boolean {
+        return annotationTypes.any { PsiAnnotableUtil.canAddAnnotation(method, it) }
     }
 
-    fun areApplicableTo(function: KtFunction, annotations: List<Annotation>): Boolean {
-        return annotations.any { KtAnnotableUtil.canAddAnnotation(function, it) }
+    fun areApplicableTo(function: KtFunction, annotationTypes: List<AnnotationType>): Boolean {
+        return annotationTypes.any { KtAnnotableUtil.canAddAnnotation(function, it) }
     }
 }

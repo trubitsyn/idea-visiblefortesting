@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Nikola Trubitsyn
+ * Copyright 2017, 2018 Nikola Trubitsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiJavaToken
 import com.intellij.util.IncorrectOperationException
 import io.github.trubitsyn.visiblefortesting.annotable.PsiAnnotableUtil
-import io.github.trubitsyn.visiblefortesting.annotation.Annotations
-import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
-import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationPopup
+import io.github.trubitsyn.visiblefortesting.annotation.AnnotationTypes
+import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
+import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationTypePopup
 import org.jetbrains.annotations.NonNls
 
 class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
-    var availableAnnotations: List<Annotation> = emptyList()
+    var availableAnnotationTypes: List<AnnotationType> = emptyList()
 
     @NonNls
     override fun getText() = "Annotate methods as @VisibleForTesting"
@@ -45,18 +45,18 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
         }
 
         if (psiElement is PsiJavaToken && psiElement.parent is PsiClass) {
-            if (availableAnnotations.isEmpty()) {
-                availableAnnotations = Annotations.available(project)
+            if (availableAnnotationTypes.isEmpty()) {
+                availableAnnotationTypes = AnnotationTypes.available(project)
             }
 
-            if (availableAnnotations.isEmpty()) {
+            if (availableAnnotationTypes.isEmpty()) {
                 return false
             }
 
             val psiClass = psiElement.parent as PsiClass
             return psiClass.methods
                     .asSequence()
-                    .any { method -> Annotations.areApplicableTo(method, availableAnnotations) }
+                    .any { method -> AnnotationTypes.areApplicableTo(method, availableAnnotationTypes) }
         }
         return false
     }
@@ -66,15 +66,15 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
         val psiClass = psiElement.parent as PsiClass
 
         val applicableAnnotations = psiClass.methods
-                .flatMap { method -> availableAnnotations.filter { PsiAnnotableUtil.canAddAnnotation(method, it) } }
+                .flatMap { method -> availableAnnotationTypes.filter { PsiAnnotableUtil.canAddAnnotation(method, it) } }
                 .toSet()
                 .sortedBy { it.qualifiedName }
                 .toList()
 
-        ChooseAnnotationPopup(editor).show(applicableAnnotations, { annotation ->
+        ChooseAnnotationTypePopup(editor).show(applicableAnnotations, { annotation ->
             psiClass.methods
                     .asSequence()
-                    .filter { Annotations.areApplicableTo(it, applicableAnnotations) }
+                    .filter { AnnotationTypes.areApplicableTo(it, applicableAnnotations) }
                     .forEach { PsiAnnotableUtil.addAnnotation(it, annotation) }
         })
     }
