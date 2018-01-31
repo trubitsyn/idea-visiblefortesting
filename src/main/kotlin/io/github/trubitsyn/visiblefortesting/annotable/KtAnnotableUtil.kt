@@ -26,6 +26,7 @@ import org.jetbrains.kotlin.idea.util.findAnnotation
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtFunction
+import org.jetbrains.kotlin.psi.psiUtil.containingClass
 
 object KtAnnotableUtil {
 
@@ -34,13 +35,28 @@ object KtAnnotableUtil {
     }
 
     fun canAddAnnotation(function: KtFunction, annotation: Annotation): Boolean {
-        return !isPublic(function) && !hasAnnotation(function, annotation)
+        return (!isPublic(function) || isProtectedInFinalClass(function)) && !hasAnnotation(function, annotation)
     }
 
     private fun isPublic(function: KtFunction): Boolean {
         return (!function.hasModifier(KtTokens.PROTECTED_KEYWORD) &&
                 !function.hasModifier(KtTokens.INTERNAL_KEYWORD) &&
                 !function.hasModifier(KtTokens.PRIVATE_KEYWORD))
+    }
+
+    private fun isProtectedInFinalClass(function: KtFunction): Boolean {
+        val isProtected = function.hasModifier(KtTokens.PROTECTED_KEYWORD)
+
+        if (!isProtected) {
+            return false
+        }
+
+        val ktClass = function.containingClass()
+
+        if (ktClass != null) {
+            return !ktClass.hasModifier(KtTokens.OPEN_KEYWORD)
+        }
+        return false
     }
 
     fun addAnnotation(function: KtFunction, annotation: Annotation) {
