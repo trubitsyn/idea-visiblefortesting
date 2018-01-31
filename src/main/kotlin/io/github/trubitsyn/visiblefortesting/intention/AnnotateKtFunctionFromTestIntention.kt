@@ -18,15 +18,22 @@ package io.github.trubitsyn.visiblefortesting.intention
 
 import com.intellij.ide.projectView.impl.ProjectRootsUtil
 import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiPackage
+import com.intellij.psi.search.GlobalSearchScope
 import io.github.trubitsyn.visiblefortesting.annotable.KtAnnotableUtil
 import io.github.trubitsyn.visiblefortesting.annotation.Annotations
 import io.github.trubitsyn.visiblefortesting.annotation.base.Annotation
 import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationPopup
 import org.jetbrains.kotlin.idea.intentions.SelfTargetingIntention
+import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
 import org.jetbrains.kotlin.idea.references.mainReference
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtCallExpression
+import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtFunction
 import org.jetbrains.kotlin.psi.KtReferenceExpression
+import org.jetbrains.kotlin.psi.psiUtil.containingClass
+import org.jetbrains.kotlin.resolve.jvm.KotlinJavaPsiFacade
 
 class AnnotateKtFunctionFromTestIntention : SelfTargetingIntention<KtReferenceExpression>(
         KtReferenceExpression::class.java,
@@ -43,7 +50,12 @@ class AnnotateKtFunctionFromTestIntention : SelfTargetingIntention<KtReferenceEx
             return false
         }
 
-        val function = element.mainReference.resolve() as KtFunction
+        val resolvedMethod = element.mainReference.resolve() ?: return false
+        val function = resolvedMethod as KtFunction
+
+        if (isAccessibleFromTestPackage(element, function)) {
+            return false
+        }
 
         if (availableAnnotations.isEmpty()) {
             availableAnnotations = Annotations.available(element.project)
@@ -54,6 +66,41 @@ class AnnotateKtFunctionFromTestIntention : SelfTargetingIntention<KtReferenceEx
         }
 
         return Annotations.areApplicableTo(function, availableAnnotations)
+    }
+
+    private fun isAccessibleFromTestPackage(element: KtElement, function: KtFunction): Boolean {
+        if (function.hasModifier(KtTokens.PUBLIC_KEYWORD)) return true
+
+        val currentPackageName = element.containingKtFile.packageFqName.asString()
+        val currentPackage = KotlinJavaPsiFacade
+                .getInstance(element.project)
+                .findPackage(currentPackageName, GlobalSearchScope.projectScope(element.project)) ?: return false
+
+        if (function.hasModifier(KtTokens.PROTECTED_KEYWORD) &&
+                (function.containingClass()?.hasModifier(KtTokens.OPEN_KEYWORD) == true) &&
+                isInPackage(function, currentPackage)){
+            return true
+        }
+
+        if (!function.hasModifier(KtTokens.PRIVATE_KEYWORD) && isInPackage(function, currentPackage)) {
+            return true
+        }
+        return false
+    }
+
+    private fun isInPackage(function: KtFunction, pkg: PsiPackage): Boolean {
+        val pkgName = pkg.getKotlinFqName()!!.asString()
+        val funPkgName = function.containingKtFile.packageFqName.asString()
+
+        if (pkgName == funPkgName) {
+            return true
+        }
+
+        if (pkg.subPackages.any { it.getKotlinFqName()!!.asString() == funPkgName }) {
+            return true
+        }
+
+        return false
     }
 
     override fun applyTo(element: KtReferenceExpression, editor: Editor?) {
