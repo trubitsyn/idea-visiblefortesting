@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Nikola Trubitsyn
+ * Copyright 2017, 2018 Nikola Trubitsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import io.github.trubitsyn.visiblefortesting.annotation.impl.GuavaAnnotation
 import org.jetbrains.kotlin.psi.KtFunction
 
 object Annotations {
-    private val annotations = setOf<Annotation>(
+    private val annotations = setOf(
             AndroidAnnotation(),
             GuavaAnnotation()
     )
