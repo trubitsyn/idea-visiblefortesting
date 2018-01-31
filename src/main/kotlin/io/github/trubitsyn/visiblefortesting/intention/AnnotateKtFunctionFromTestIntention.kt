@@ -32,7 +32,6 @@ import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtFunction
 import org.jetbrains.kotlin.psi.KtReferenceExpression
-import org.jetbrains.kotlin.psi.psiUtil.containingClass
 import org.jetbrains.kotlin.resolve.jvm.KotlinJavaPsiFacade
 
 class AnnotateKtFunctionFromTestIntention : SelfTargetingIntention<KtReferenceExpression>(
@@ -53,9 +52,9 @@ class AnnotateKtFunctionFromTestIntention : SelfTargetingIntention<KtReferenceEx
         val resolvedMethod = element.mainReference.resolve() ?: return false
         val function = resolvedMethod as KtFunction
 
-        if (isAccessibleFromTestPackage(element, function)) {
-            return false
-        }
+        //if (isAccessibleFromTestPackage(element, function)) {
+        //    return false
+        //}
 
         if (availableAnnotations.isEmpty()) {
             availableAnnotations = Annotations.available(element.project)
@@ -76,9 +75,7 @@ class AnnotateKtFunctionFromTestIntention : SelfTargetingIntention<KtReferenceEx
                 .getInstance(element.project)
                 .findPackage(currentPackageName, GlobalSearchScope.projectScope(element.project)) ?: return false
 
-        if (function.hasModifier(KtTokens.PROTECTED_KEYWORD) &&
-                (function.containingClass()?.hasModifier(KtTokens.OPEN_KEYWORD) == true) &&
-                isInPackage(function, currentPackage)){
+        if (!KtAnnotableUtil.isProtectedInFinalClass(function) && isInPackage(function, currentPackage)){
             return true
         }
 

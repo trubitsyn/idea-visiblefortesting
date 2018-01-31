@@ -44,7 +44,7 @@ object KtAnnotableUtil {
                 !function.hasModifier(KtTokens.PRIVATE_KEYWORD))
     }
 
-    private fun isProtectedInFinalClass(function: KtFunction): Boolean {
+    fun isProtectedInFinalClass(function: KtFunction): Boolean {
         val isProtected = function.hasModifier(KtTokens.PROTECTED_KEYWORD)
 
         if (!isProtected) {
