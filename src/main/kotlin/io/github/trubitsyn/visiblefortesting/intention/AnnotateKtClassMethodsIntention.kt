@@ -25,17 +25,17 @@ import io.github.trubitsyn.visiblefortesting.annotation.AnnotationTypes
 import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
 import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationTypePopup
 import org.jetbrains.kotlin.idea.intentions.SelfTargetingIntention
-import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtFunction
 
-class AnnotateKtClassMethodsIntention : SelfTargetingIntention<KtClass>(
-        KtClass::class.java,
+class AnnotateKtClassMethodsIntention : SelfTargetingIntention<KtClassOrObject>(
+        KtClassOrObject::class.java,
         "Annotate methods as @VisibleForTesting",
         CodeInsightBundle.message("intention.add.annotation.family")
 ), LowPriorityAction {
     var availableAnnotationTypes: List<AnnotationType> = emptyList()
 
-    override fun isApplicableTo(element: KtClass, caretOffset: Int): Boolean {
+    override fun isApplicableTo(element: KtClassOrObject, caretOffset: Int): Boolean {
         if (ProjectRootsUtil.isInTestSource(element.containingFile)) {
             return false
         }
@@ -54,7 +54,7 @@ class AnnotateKtClassMethodsIntention : SelfTargetingIntention<KtClass>(
                 .any { func -> AnnotationTypes.areApplicableTo(func, availableAnnotationTypes) }
     }
 
-    override fun applyTo(element: KtClass, editor: Editor?) {
+    override fun applyTo(element: KtClassOrObject, editor: Editor?) {
         val functions = element.declarations.filterIsInstance(KtFunction::class.java)
 
         val applicableAnnotations = functions
