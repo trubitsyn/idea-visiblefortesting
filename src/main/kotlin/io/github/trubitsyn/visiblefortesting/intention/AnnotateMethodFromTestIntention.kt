@@ -37,7 +37,6 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
     override fun getFamilyName() = CodeInsightBundle.message("intention.add.annotation.family")
 
     override fun isAvailable(project: Project, editor: Editor, element: PsiElement): Boolean {
-
         if (!ProjectRootsUtil.isInTestSource(element.containingFile)) {
             return false
         }
