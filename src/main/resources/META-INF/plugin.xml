@@ -63,7 +63,7 @@
         </intentionAction>
 
         <intentionAction>
-            <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateKtClassMethodsIntention</className>
+            <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateKtClassOrObjectMethodsIntention</className>
         </intentionAction>
         <intentionAction>
             <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateKtFunctionIntention</className>

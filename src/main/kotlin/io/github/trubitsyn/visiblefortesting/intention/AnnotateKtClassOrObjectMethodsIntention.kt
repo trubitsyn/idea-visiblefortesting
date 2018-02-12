@@ -28,7 +28,7 @@ import org.jetbrains.kotlin.idea.intentions.SelfTargetingIntention
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtFunction
 
-class AnnotateKtClassMethodsIntention : SelfTargetingIntention<KtClassOrObject>(
+class AnnotateKtClassOrObjectMethodsIntention : SelfTargetingIntention<KtClassOrObject>(
         KtClassOrObject::class.java,
         "Annotate methods as @VisibleForTesting",
         CodeInsightBundle.message("intention.add.annotation.family")

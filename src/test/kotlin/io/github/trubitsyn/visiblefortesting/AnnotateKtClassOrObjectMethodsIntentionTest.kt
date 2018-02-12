@@ -17,13 +17,13 @@
 package io.github.trubitsyn.visiblefortesting
 
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
-import io.github.trubitsyn.visiblefortesting.intention.AnnotateKtClassMethodsIntention
+import io.github.trubitsyn.visiblefortesting.intention.AnnotateKtClassOrObjectMethodsIntention
 import org.junit.Test
 import java.io.File
 
-class AnnotateKtClassMethodsIntentionTest : LightCodeInsightFixtureTestCase() {
+class AnnotateKtClassOrObjectMethodsIntentionTest : LightCodeInsightFixtureTestCase() {
 
-    override fun getTestDataPath() = "src/test/resources/AnnotateKtClassMethodsIntention"
+    override fun getTestDataPath() = "src/test/resources/AnnotateKtClassOrObjectMethodsIntention"
 
     @Test
     fun testAndroid() {
@@ -56,7 +56,7 @@ class AnnotateKtClassMethodsIntentionTest : LightCodeInsightFixtureTestCase() {
         val text = File(targetClass).readText()
         myFixture.addClass(text)
         myFixture.configureByFile(before)
-        val action = AnnotateKtClassMethodsIntention()
+        val action = AnnotateKtClassOrObjectMethodsIntention()
         assertNotNull(action)
         myFixture.launchAction(action)
         myFixture.checkResultByFile(after)
