@@ -50,19 +50,21 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
                     .getInstance(project)
                     .findPackage(javaFile.packageName) ?: return false
 
-            if (!PsiUtil.isAccessibleFromPackage(method, currentPackage)) {
-                if (availableAnnotationTypes.isEmpty()) {
-                    availableAnnotationTypes = AnnotationTypes.available(project)
-                }
+            if (PsiUtil.isAccessibleFromPackage(method, currentPackage)) {
+                return false
+            }
 
-                if (availableAnnotationTypes.isEmpty()) {
-                    return false
-                }
+            if (availableAnnotationTypes.isEmpty()) {
+                availableAnnotationTypes = AnnotationTypes.available(project)
+            }
 
-                if (AnnotationTypes.areApplicableTo(method, availableAnnotationTypes)) {
-                    text = "Annotate '${method.containingClass?.name}.${method.name}' as @VisibleForTesting"
-                    return true
-                }
+            if (availableAnnotationTypes.isEmpty()) {
+                return false
+            }
+
+            if (AnnotationTypes.areApplicableTo(method, availableAnnotationTypes)) {
+                text = "Annotate '${method.containingClass?.name}.${method.name}' as @VisibleForTesting"
+                return true
             }
         }
         return false
