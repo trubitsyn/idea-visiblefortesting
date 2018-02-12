@@ -25,7 +25,7 @@ class ChooseAnnotationTypePopup(private val editor: Editor) {
     fun show(annotationTypes: List<AnnotationType>, onChosen: (annotationType: AnnotationType) -> Unit) {
 
         if (annotationTypes.isEmpty()) {
-            throw IllegalArgumentException("No annotationTypes provided.")
+            throw IllegalArgumentException("No annotation types provided.")
         }
 
         if (annotationTypes.size == 1) {
