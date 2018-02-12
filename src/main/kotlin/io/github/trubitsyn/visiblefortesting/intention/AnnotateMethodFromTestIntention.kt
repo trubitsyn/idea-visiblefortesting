@@ -46,7 +46,9 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
             val call = element.parent.parent as PsiMethodCallExpression
             val method = call.resolveMethod() ?: return false
             val javaFile = element.containingFile as PsiJavaFile
-            val currentPackage = JavaPsiFacade.getInstance(project).findPackage(javaFile.packageName) ?: return false
+            val currentPackage = JavaPsiFacade
+                    .getInstance(project)
+                    .findPackage(javaFile.packageName) ?: return false
 
             if (!PsiUtil.isAccessibleFromPackage(method, currentPackage)) {
                 if (availableAnnotationTypes.isEmpty()) {
