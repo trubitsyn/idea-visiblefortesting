@@ -1,5 +1,8 @@
 class F<caret>oo {
 
+    @VisibleForTesting
+    fun annotatedFoo() {}
+
     fun publicFoo() {}
 
     protected fun foo() {}

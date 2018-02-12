@@ -2,6 +2,11 @@ import android.support.annotation.VisibleForTesting;
 
 class Foo {
 
+    @VisibleForTesting
+    private void annotatedFoo() {}
+
+    public void publicFoo() {}
+
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public void foo() {}
 
