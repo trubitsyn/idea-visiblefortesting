@@ -54,7 +54,6 @@
     <extensions defaultExtensionNs="com.intellij">
         <intentionAction>
             <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateClassMethodsIntention</className>
-            <category>Android</category>
         </intentionAction>
         <intentionAction>
             <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateMethodIntention</className>
@@ -65,7 +64,6 @@
 
         <intentionAction>
             <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateKtClassMethodsIntention</className>
-            <category>Android</category>
         </intentionAction>
         <intentionAction>
             <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateKtFunctionIntention</className>

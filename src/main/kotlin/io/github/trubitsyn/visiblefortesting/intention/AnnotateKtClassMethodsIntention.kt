@@ -16,6 +16,7 @@
 
 package io.github.trubitsyn.visiblefortesting.intention
 
+import com.intellij.codeInsight.CodeInsightBundle
 import com.intellij.codeInsight.intention.LowPriorityAction
 import com.intellij.ide.projectView.impl.ProjectRootsUtil
 import com.intellij.openapi.editor.Editor
@@ -29,7 +30,8 @@ import org.jetbrains.kotlin.psi.KtFunction
 
 class AnnotateKtClassMethodsIntention : SelfTargetingIntention<KtClass>(
         KtClass::class.java,
-        "Annotate methods as @VisibleForTesting"
+        "Annotate methods as @VisibleForTesting",
+        CodeInsightBundle.message("intention.add.annotation.family")
 ), LowPriorityAction {
     var availableAnnotationTypes: List<AnnotationType> = emptyList()
 

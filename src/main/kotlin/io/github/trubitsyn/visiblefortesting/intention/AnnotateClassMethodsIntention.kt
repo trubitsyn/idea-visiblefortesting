@@ -16,6 +16,7 @@
 
 package io.github.trubitsyn.visiblefortesting.intention
 
+import com.intellij.codeInsight.CodeInsightBundle
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.ide.projectView.impl.ProjectRootsUtil
 import com.intellij.openapi.editor.Editor
@@ -37,7 +38,7 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
     override fun getText() = "Annotate methods as @VisibleForTesting"
 
     @NonNls
-    override fun getFamilyName() = text
+    override fun getFamilyName() = CodeInsightBundle.message("intention.add.annotation.family")
 
     override fun isAvailable(project: Project, editor: Editor, psiElement: PsiElement): Boolean {
         if (ProjectRootsUtil.isInTestSource(psiElement.containingFile)) {

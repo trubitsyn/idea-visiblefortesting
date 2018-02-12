@@ -16,6 +16,7 @@
 
 package io.github.trubitsyn.visiblefortesting.intention
 
+import com.intellij.codeInsight.CodeInsightBundle
 import com.intellij.ide.projectView.impl.ProjectRootsUtil
 import com.intellij.openapi.editor.Editor
 import io.github.trubitsyn.visiblefortesting.annotable.KtAnnotableUtil
@@ -31,7 +32,8 @@ import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
 
 class AnnotateKtFunctionFromTestIntention : SelfTargetingIntention<KtReferenceExpression>(
         KtReferenceExpression::class.java,
-        "Annotate as @VisibleForTesting"
+        "Annotate as @VisibleForTesting",
+        CodeInsightBundle.message("intention.add.annotation.family")
 ) {
     var availableAnnotationTypes: List<AnnotationType> = emptyList()
 
