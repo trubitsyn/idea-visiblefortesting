@@ -1,4 +1,4 @@
-# VisibleForTesting
+# VisibleForTesting [![Build Status](https://travis-ci.org/trubitsyn/VisibleForTesting.svg?branch=master)](https://travis-ci.org/trubitsyn/VisibleForTesting)
 
 @VisibleForTesting annotation support for the IntelliJ platform.
 
