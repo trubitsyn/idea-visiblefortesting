@@ -23,7 +23,7 @@ Annotation elements are available since Support Library `25.0.0` and won't be ge
 
 # Features
 
-Supported programming languages: Java, Kotlin.
+Supported programming languages: Java, Kotlin. Please note: Java methods cannot be annotated from Kotlin and vice-versa yet.
 
 ## Choose from multiple annotation types to import
 
@@ -39,7 +39,7 @@ Supported programming languages: Java, Kotlin.
 
 ![Annotate method](img/guava/annotate-method.gif)
 
-## Annotate class methods
+## Annotate Java or Kotlin class methods
 
 ### android.support.annotation
 
@@ -49,7 +49,7 @@ Supported programming languages: Java, Kotlin.
 
 ![Annotate class methods](img/guava/annotate-class-methods.gif)
 
-## Annotate method from test
+## Annotate Java method or Kotlin function from test
 
 ### android.support.annotation
 
