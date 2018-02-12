@@ -23,6 +23,8 @@ Annotation elements are available since Support Library `25.0.0` and won't be ge
 
 # Features
 
+Supported programming languages: Java, Kotlin.
+
 ## Choose from multiple annotation types to import
 
 ![Choose annotation type](img/choose-annotation-type.gif)
