@@ -3,7 +3,7 @@ import android.support.annotation.VisibleForTesting
 class Foo {
 
     @VisibleForTesting
-    fun annotatedFoo() {}
+    private fun annotatedFoo() {}
 
     fun publicFoo() {}
 

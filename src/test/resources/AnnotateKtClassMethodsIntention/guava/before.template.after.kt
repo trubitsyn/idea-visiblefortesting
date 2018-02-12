@@ -3,7 +3,7 @@ import com.google.common.annotations.VisibleForTesting
 class Foo {
 
     @VisibleForTesting
-    fun annotatedFoo() {}
+    private fun annotatedFoo() {}
 
     fun publicFoo() {}
 
