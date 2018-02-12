@@ -29,7 +29,7 @@ Supported programming languages: Java, Kotlin.
 
 ![Choose annotation type](img/choose-annotation-type.gif)
 
-## Annotate method
+## Annotate method (or Kotlin function in a class, object or file)
 
 ### android.support.annotation
 
