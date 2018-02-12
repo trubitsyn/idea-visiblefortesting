@@ -18,21 +18,16 @@ package io.github.trubitsyn.visiblefortesting.intention
 
 import com.intellij.ide.projectView.impl.ProjectRootsUtil
 import com.intellij.openapi.editor.Editor
-import com.intellij.psi.PsiPackage
-import com.intellij.psi.search.GlobalSearchScope
 import io.github.trubitsyn.visiblefortesting.annotable.KtAnnotableUtil
 import io.github.trubitsyn.visiblefortesting.annotation.AnnotationTypes
 import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
 import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationTypePopup
 import org.jetbrains.kotlin.idea.intentions.SelfTargetingIntention
-import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
 import org.jetbrains.kotlin.idea.references.mainReference
-import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtCallExpression
-import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtFunction
 import org.jetbrains.kotlin.psi.KtReferenceExpression
-import org.jetbrains.kotlin.resolve.jvm.KotlinJavaPsiFacade
+import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
 
 class AnnotateKtFunctionFromTestIntention : SelfTargetingIntention<KtReferenceExpression>(
         KtReferenceExpression::class.java,
@@ -60,7 +55,15 @@ class AnnotateKtFunctionFromTestIntention : SelfTargetingIntention<KtReferenceEx
             return false
         }
 
-        return AnnotationTypes.areApplicableTo(function, availableAnnotationTypes)
+        if (AnnotationTypes.areApplicableTo(function, availableAnnotationTypes)) {
+            if (function.containingClassOrObject != null) {
+                text = "Annotate '${function.containingClassOrObject?.name}.${function.name}' as @VisibleForTesting"
+            } else {
+                text = "Annotate '${function.name}' as @VisibleForTesting"
+            }
+            return true
+        }
+        return false
     }
 
     override fun applyTo(element: KtReferenceExpression, editor: Editor?) {
