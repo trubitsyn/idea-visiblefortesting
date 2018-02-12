@@ -16,16 +16,17 @@
 
 package io.github.trubitsyn.visiblefortesting
 
-import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
+import com.intellij.openapi.editor.Editor
 import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationTypePopup
 import org.junit.Test
+import org.mockito.Mockito
 
-class ChooseAnnotationTypePopupTest : LightCodeInsightFixtureTestCase() {
-
-    val popup = ChooseAnnotationTypePopup(myFixture.editor)
+class ChooseAnnotationTypePopupTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun shouldThrowWhenNoAnnotations() {
+        val editor = Mockito.mock(Editor::class.java)
+        val popup = ChooseAnnotationTypePopup(editor)
         popup.show(listOf(), {})
     }
 }
