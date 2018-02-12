@@ -52,10 +52,6 @@ class AnnotateKtFunctionFromTestIntention : SelfTargetingIntention<KtReferenceEx
         val resolvedMethod = element.mainReference.resolve() ?: return false
         val function = resolvedMethod as KtFunction
 
-        //if (isAccessibleFromTestPackage(element, function)) {
-        //    return false
-        //}
-
         if (availableAnnotationTypes.isEmpty()) {
             availableAnnotationTypes = AnnotationTypes.available(element.project)
         }
