@@ -63,39 +63,6 @@ class AnnotateKtFunctionFromTestIntention : SelfTargetingIntention<KtReferenceEx
         return AnnotationTypes.areApplicableTo(function, availableAnnotationTypes)
     }
 
-    private fun isAccessibleFromTestPackage(element: KtElement, function: KtFunction): Boolean {
-        if (function.hasModifier(KtTokens.PUBLIC_KEYWORD)) return true
-
-        val currentPackageName = element.containingKtFile.packageFqName.asString()
-        val currentPackage = KotlinJavaPsiFacade
-                .getInstance(element.project)
-                .findPackage(currentPackageName, GlobalSearchScope.projectScope(element.project)) ?: return false
-
-        if (!KtAnnotableUtil.isProtectedInFinalClass(function) && isInPackage(function, currentPackage)){
-            return true
-        }
-
-        if (!function.hasModifier(KtTokens.PRIVATE_KEYWORD) && isInPackage(function, currentPackage)) {
-            return true
-        }
-        return false
-    }
-
-    private fun isInPackage(function: KtFunction, pkg: PsiPackage): Boolean {
-        val pkgName = pkg.getKotlinFqName()!!.asString()
-        val funPkgName = function.containingKtFile.packageFqName.asString()
-
-        if (pkgName == funPkgName) {
-            return true
-        }
-
-        if (pkg.subPackages.any { it.getKotlinFqName()!!.asString() == funPkgName }) {
-            return true
-        }
-
-        return false
-    }
-
     override fun applyTo(element: KtReferenceExpression, editor: Editor?) {
         val function = element.mainReference.resolve() as KtFunction
 
