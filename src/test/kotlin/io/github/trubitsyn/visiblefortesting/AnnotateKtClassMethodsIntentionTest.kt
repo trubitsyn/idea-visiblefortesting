@@ -39,6 +39,19 @@ class AnnotateKtClassMethodsIntentionTest : LightCodeInsightFixtureTestCase() {
                 "guava/before.template.after.kt")
     }
 
+    @Test
+    fun testObjectGuava() {
+        runTest("src/test/resources/classes/GuavaVisibleForTesting.java",
+                "guava/before.object.template.kt",
+                "guava/before.object.template.after.kt")
+    }
+
+    fun testObjectAndroid() {
+        runTest("src/test/resources/classes/AndroidVisibleForTesting.java",
+                "android/before.object.template.kt",
+                "android/before.object.template.after.kt")
+    }
+
     private fun runTest(targetClass: String, before: String, after: String) {
         val text = File(targetClass).readText()
         myFixture.addClass(text)
