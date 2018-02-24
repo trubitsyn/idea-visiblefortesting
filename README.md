@@ -1,4 +1,4 @@
-# VisibleForTesting [![Build Status](https://travis-ci.org/trubitsyn/VisibleForTesting.svg?branch=master)](https://travis-ci.org/trubitsyn/VisibleForTesting) [![Downloads](https://img.shields.io/jetbrains/plugin/d/9952-visiblefortesting.svg)](https://plugins.jetbrains.com/plugin/9952-visiblefortesting) [![Version](https://img.shields.io/jetbrains/plugin/v/9952-visiblefortesting.svg)](https://plugins.jetbrains.com/plugin/9952-visiblefortesting)
+# VisibleForTesting [![Build Status](https://travis-ci.org/trubitsyn/idea-visiblefortesting.svg?branch=master)](https://travis-ci.org/trubitsyn/idea-visiblefortesting) [![Downloads](https://img.shields.io/jetbrains/plugin/d/9952-visiblefortesting.svg)](https://plugins.jetbrains.com/plugin/9952-visiblefortesting) [![Version](https://img.shields.io/jetbrains/plugin/v/9952-visiblefortesting.svg)](https://plugins.jetbrains.com/plugin/9952-visiblefortesting)
 
 @VisibleForTesting annotation support for the IntelliJ platform.
 
