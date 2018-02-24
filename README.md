@@ -4,7 +4,7 @@
 
 # Motivation
 
-It's time-consuming to annotate existing non-public methods: you have to remove modifiers and manually type the annotation.
+It's time-consuming to annotate existing non-public methods: you have to remove modifiers and type the annotation manually.
 
 Now you don't have to: plugin will do that for you.
 

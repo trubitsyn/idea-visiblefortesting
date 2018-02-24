@@ -10,7 +10,7 @@
     <description><![CDATA[
         <p>@VisibleForTesting annotation support for the IntelliJ platform.</p>
         <h1>Motivation</h1>
-        <p>It’s time-consuming to annotate existing non-public methods: you have to remove modifiers and manually type the annotation.</p>
+        <p>It’s time-consuming to annotate existing non-public methods: you have to remove modifiers and type the annotation manually.</p>
         <p>Now you don’t have to: plugin will do that for you.</p>
         <h1>Supported annotation types</h2>
         <ul>
