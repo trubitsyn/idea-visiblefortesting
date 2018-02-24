@@ -43,11 +43,7 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        <ul>
-            <li>Added support for @com.google.common.annotations.VisibleForTesting</li>
-            <li>Fixed a bug with generating redundant annotation</li>
-            <li>Fixed compatibility issues</li>
-        </ul>
+        Added support for Kotlin programming language.
     ]]>
     </change-notes>
 
