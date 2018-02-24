@@ -1,3 +1,5 @@
+import com.google.common.annotations.VisibleForTesting
+
 class F<caret>oo {
 
     @VisibleForTesting

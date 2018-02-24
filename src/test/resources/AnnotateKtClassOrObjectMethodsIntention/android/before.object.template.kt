@@ -1,3 +1,5 @@
+import android.support.annotation.VisibleForTesting
+
 object F<caret>oo {
 
     @VisibleForTesting
