@@ -24,22 +24,22 @@
         <h1>Features</h1>
         <p>Supported programming languages: Java, Kotlin. Please note: Java methods cannot be annotated from Kotlin and vice-versa yet.</p></br>
         <h2>Choose from multiple annotation types to import</h2>
-        <p><img src="https://raw.githubusercontent.com/trubitsyn/idea-visiblefortesting/master/img/choose-annotation-type.gif" alt="Choose annotation"></p>
+        <p><img src="https://raw.githubusercontent.com/trubitsyn/idea-visiblefortesting/1.2.0/img/choose-annotation-type.gif" alt="Choose annotation"></p>
         <h2>Annotate method (or Kotlin function in a class, object or file)</h2>
         <h3>android.support.annotation</h3>
-        <p><img src="https://raw.githubusercontent.com/trubitsyn/idea-visiblefortesting/master/img/android/annotate-method.gif" alt="Annotate method"></p>
+        <p><img src="https://raw.githubusercontent.com/trubitsyn/idea-visiblefortesting/1.2.0/img/android/annotate-method.gif" alt="Annotate method"></p>
         <h3>com.google.common.annotations</h3>
-        <p><img src="https://raw.githubusercontent.com/trubitsyn/idea-visiblefortesting/master/img/guava/annotate-method.gif" alt="Annotate method"></p>
+        <p><img src="https://raw.githubusercontent.com/trubitsyn/idea-visiblefortesting/1.2.0/img/guava/annotate-method.gif" alt="Annotate method"></p>
         <h2>Annotate Kotlin or Java class methods</h2>
         <h3>android.support.annotation</h3>
-        <p><img src="https://raw.githubusercontent.com/trubitsyn/idea-visiblefortesting/master/img/android/annotate-class-methods.gif" alt="Annotate class methods"></p>
+        <p><img src="https://raw.githubusercontent.com/trubitsyn/idea-visiblefortesting/1.2.0/img/android/annotate-class-methods.gif" alt="Annotate class methods"></p>
         <h3>com.google.common.annotations</h3>
-        <p><img src="https://raw.githubusercontent.com/trubitsyn/idea-visiblefortesting/master/img/guava/annotate-class-methods.gif" alt="Annotate class methods"></p>
+        <p><img src="https://raw.githubusercontent.com/trubitsyn/idea-visiblefortesting/1.2.0/img/guava/annotate-class-methods.gif" alt="Annotate class methods"></p>
         <h2>Annotate Java method or Kotlin function from test</h2>
         <h3>android.support.annotation</h3>
-        <p><img src="https://raw.githubusercontent.com/trubitsyn/idea-visiblefortesting/master/img/android/annotate-method-from-test.gif" alt="Annotate method from test"></p>
+        <p><img src="https://raw.githubusercontent.com/trubitsyn/idea-visiblefortesting/1.2.0/img/android/annotate-method-from-test.gif" alt="Annotate method from test"></p>
         <h3>com.google.common.annotations</h3>
-        <p><img src="https://raw.githubusercontent.com/trubitsyn/idea-visiblefortesting/master/img/guava/annotate-method-from-test.gif" alt="Annotate method from test"></p>
+        <p><img src="https://raw.githubusercontent.com/trubitsyn/idea-visiblefortesting/1.2.0/img/guava/annotate-method-from-test.gif" alt="Annotate method from test"></p>
     ]]></description>
 
     <change-notes><![CDATA[
