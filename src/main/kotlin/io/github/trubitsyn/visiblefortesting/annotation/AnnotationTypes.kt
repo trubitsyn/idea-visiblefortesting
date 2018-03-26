@@ -22,13 +22,15 @@ import io.github.trubitsyn.visiblefortesting.annotable.KtAnnotableUtil
 import io.github.trubitsyn.visiblefortesting.annotable.PsiAnnotableUtil
 import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
 import io.github.trubitsyn.visiblefortesting.annotation.impl.AndroidAnnotationType
+import io.github.trubitsyn.visiblefortesting.annotation.impl.FlinkAnnotationType
 import io.github.trubitsyn.visiblefortesting.annotation.impl.GuavaAnnotationType
 import org.jetbrains.kotlin.psi.KtFunction
 
 object AnnotationTypes {
     private val annotations = setOf(
             AndroidAnnotationType(),
-            GuavaAnnotationType()
+            GuavaAnnotationType(),
+            FlinkAnnotationType()
     )
 
     fun available(project: Project) = annotations.filter { it.isAvailable(project) }
