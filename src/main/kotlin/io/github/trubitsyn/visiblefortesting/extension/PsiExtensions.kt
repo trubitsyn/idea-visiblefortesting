@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Nikola Trubitsyn
+ * Copyright 2017, 2018 Nikola Trubitsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,14 @@ package io.github.trubitsyn.visiblefortesting.extension
 
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiJavaFile
+import com.intellij.psi.PsiMethod
 import com.intellij.psi.impl.source.codeStyle.ImportHelper
+import io.github.trubitsyn.visiblefortesting.annotable.PsiAnnotableUtil
+import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
+
+fun List<AnnotationType>.areApplicableTo(method: PsiMethod): Boolean {
+    return this.any { PsiAnnotableUtil.canAddAnnotation(method, it) }
+}
 
 fun PsiJavaFile.smartImportClass(qualifiedName: String, clazz: PsiClass?): String {
     val name = qualifiedName.substringAfterLast('.')

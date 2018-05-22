@@ -28,6 +28,7 @@ import com.intellij.util.IncorrectOperationException
 import io.github.trubitsyn.visiblefortesting.annotable.PsiAnnotableUtil
 import io.github.trubitsyn.visiblefortesting.annotation.AnnotationTypes
 import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
+import io.github.trubitsyn.visiblefortesting.extension.areApplicableTo
 import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationTypePopup
 import org.jetbrains.annotations.NonNls
 
@@ -57,7 +58,7 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
             val psiClass = psiElement.parent as PsiClass
             return psiClass.methods
                     .asSequence()
-                    .any { method -> AnnotationTypes.areApplicableTo(method, availableAnnotationTypes) }
+                    .any { method -> availableAnnotationTypes.areApplicableTo(method) }
         }
         return false
     }
@@ -75,7 +76,7 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
         ChooseAnnotationTypePopup(editor).show(applicableAnnotations, { annotation ->
             psiClass.methods
                     .asSequence()
-                    .filter { AnnotationTypes.areApplicableTo(it, applicableAnnotations) }
+                    .filter { applicableAnnotations.areApplicableTo(it) }
                     .forEach { PsiAnnotableUtil.addAnnotation(it, annotation) }
         })
     }

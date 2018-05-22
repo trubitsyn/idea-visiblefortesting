@@ -17,14 +17,9 @@
 package io.github.trubitsyn.visiblefortesting.annotation
 
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiMethod
-import io.github.trubitsyn.visiblefortesting.annotable.KtAnnotableUtil
-import io.github.trubitsyn.visiblefortesting.annotable.PsiAnnotableUtil
-import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
 import io.github.trubitsyn.visiblefortesting.annotation.impl.AndroidAnnotationType
 import io.github.trubitsyn.visiblefortesting.annotation.impl.FlinkAnnotationType
 import io.github.trubitsyn.visiblefortesting.annotation.impl.GuavaAnnotationType
-import org.jetbrains.kotlin.psi.KtFunction
 
 object AnnotationTypes {
     private val annotations = setOf(
@@ -34,12 +29,4 @@ object AnnotationTypes {
     )
 
     fun available(project: Project) = annotations.filter { it.isAvailable(project) }
-
-    fun areApplicableTo(method: PsiMethod, annotationTypes: List<AnnotationType>): Boolean {
-        return annotationTypes.any { PsiAnnotableUtil.canAddAnnotation(method, it) }
-    }
-
-    fun areApplicableTo(function: KtFunction, annotationTypes: List<AnnotationType>): Boolean {
-        return annotationTypes.any { KtAnnotableUtil.canAddAnnotation(function, it) }
-    }
 }
