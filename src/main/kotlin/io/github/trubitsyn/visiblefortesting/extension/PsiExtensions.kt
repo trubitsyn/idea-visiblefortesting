@@ -32,7 +32,6 @@ fun PsiJavaFile.smartImportClass(qualifiedName: String, clazz: PsiClass?): Strin
     val imports = importList
             ?.importStatements
             ?.filter { (it.qualifiedName?.endsWith(name) == true) && it.qualifiedName != qualifiedName }
-
     val useQualifiedName = imports != null && !imports.isEmpty()
 
     if (!useQualifiedName) {
@@ -40,6 +39,5 @@ fun PsiJavaFile.smartImportClass(qualifiedName: String, clazz: PsiClass?): Strin
             importClass(clazz)
         }
     }
-
     return if (useQualifiedName) qualifiedName else name
 }

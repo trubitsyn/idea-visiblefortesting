@@ -23,7 +23,6 @@ import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
 class ChooseAnnotationTypePopup(private val editor: Editor) {
 
     fun show(annotationTypes: List<AnnotationType>, onChosen: (annotationType: AnnotationType) -> Unit) {
-
         if (annotationTypes.isEmpty()) {
             throw IllegalArgumentException("No annotation types provided.")
         }
@@ -38,7 +37,6 @@ class ChooseAnnotationTypePopup(private val editor: Editor) {
                 val matchingAnnotation = annotationTypes.first { it.qualifiedName == psiClass.qualifiedName }
                 onChosen(matchingAnnotation)
             })
-
             ListPopupImpl(importDialog).showInBestPositionFor(editor)
         }
     }

@@ -51,7 +51,6 @@ class AnnotateKtFunctionIntention : SelfTargetingIntention<KtModifierListOwner>(
         if (availableAnnotationTypes.isEmpty()) {
             return false
         }
-
         return availableAnnotationTypes.areApplicableTo(function)
     }
 

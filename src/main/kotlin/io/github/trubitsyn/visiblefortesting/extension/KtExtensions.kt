@@ -29,15 +29,12 @@ fun List<AnnotationType>.areApplicableTo(function: KtFunction): Boolean {
 
 fun KtFile.smartImportClass(qualifiedName: String): String {
     val name = qualifiedName.substringAfterLast('.')
-
     val imports = importList?.imports
             ?.filter { (it.importedFqName?.asString()?.endsWith(name) == true) && it.importedFqName?.asString() != qualifiedName }
-
     val useQualifiedName = imports != null && !imports.isEmpty()
 
     if (!useQualifiedName && findImportByAlias(qualifiedName) == null) {
         this.resolveImportReference(FqName(qualifiedName))
     }
-
     return if (useQualifiedName) qualifiedName else name
 }

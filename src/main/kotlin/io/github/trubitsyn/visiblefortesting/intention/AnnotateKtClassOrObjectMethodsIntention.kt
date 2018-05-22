@@ -57,7 +57,6 @@ class AnnotateKtClassOrObjectMethodsIntention : SelfTargetingIntention<KtClassOr
 
     override fun applyTo(element: KtClassOrObject, editor: Editor?) {
         val functions = element.declarations.filterIsInstance(KtFunction::class.java)
-
         val applicableAnnotations = functions
                 .flatMap { func -> availableAnnotationTypes.filter { KtAnnotableUtil.canAddAnnotation(func, it) } }
                 .toSet()

@@ -31,13 +31,11 @@ class ChooseAnnotationTypeStep(psiClasses: List<PsiClass?>, private val project:
     override fun onChosen(selectedValue: PsiClass?, finalChoice: Boolean): PopupStep<*>? {
         return when {
             selectedValue == null -> PopupStep.FINAL_CHOICE
-
             finalChoice -> doFinalStep {
                 WriteCommandAction.runWriteCommandAction(project, {
                     onSelected(selectedValue)
                 })
             }
-
             else -> super.onChosen(selectedValue, finalChoice)
         }
     }

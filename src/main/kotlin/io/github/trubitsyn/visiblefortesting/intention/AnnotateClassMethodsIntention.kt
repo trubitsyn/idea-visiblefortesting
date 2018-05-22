@@ -66,7 +66,6 @@ class AnnotateClassMethodsIntention : PsiElementBaseIntentionAction() {
     @Throws(IncorrectOperationException::class)
     override fun invoke(project: Project, editor: Editor, psiElement: PsiElement) {
         val psiClass = psiElement.parent as PsiClass
-
         val applicableAnnotations = psiClass.methods
                 .flatMap { method -> availableAnnotationTypes.filter { PsiAnnotableUtil.canAddAnnotation(method, it) } }
                 .toSet()
