@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Nikola Trubitsyn
+ * Copyright 2017, 2018 Nikola Trubitsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,37 +16,23 @@
 
 package io.github.trubitsyn.visiblefortesting
 
-import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import io.github.trubitsyn.visiblefortesting.intention.AnnotateMethodIntention
 import org.junit.Test
-import java.io.File
 
 
-class AnnotateMethodIntentionTest : LightCodeInsightFixtureTestCase() {
-
-    override fun getTestDataPath() = "src/test/resources/AnnotateMethodIntention"
+class AnnotateMethodIntentionTest : AbstractIntentionTest(AnnotateMethodIntention()) {
 
     @Test
     fun testAndroid() {
-        runTest("src/test/resources/classes/AndroidVisibleForTesting.java",
+        runTest("AndroidVisibleForTesting.java",
                 "android/before.template.java",
                 "android/before.template.after.java")
     }
 
     @Test
     fun testGuava() {
-        runTest("src/test/resources/classes/GuavaVisibleForTesting.java",
+        runTest("GuavaVisibleForTesting.java",
                 "guava/before.template.java",
                 "guava/before.template.after.java")
-    }
-
-    private fun runTest(targetClass: String, before: String, after: String) {
-        val text = File(targetClass).readText()
-        myFixture.addClass(text)
-        myFixture.configureByFile(before)
-        val action = AnnotateMethodIntention()
-        assertNotNull(action)
-        myFixture.launchAction(action)
-        myFixture.checkResultByFile(after)
     }
 }

@@ -16,49 +16,35 @@
 
 package io.github.trubitsyn.visiblefortesting
 
-import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import io.github.trubitsyn.visiblefortesting.intention.AnnotateKtClassOrObjectMethodsIntention
 import org.junit.Test
-import java.io.File
 
-class AnnotateKtClassOrObjectMethodsIntentionTest : LightCodeInsightFixtureTestCase() {
-
-    override fun getTestDataPath() = "src/test/resources/AnnotateKtClassOrObjectMethodsIntention"
+class AnnotateKtClassOrObjectMethodsIntentionTest : AbstractIntentionTest(AnnotateKtClassOrObjectMethodsIntention()) {
 
     @Test
     fun testAndroid() {
-        runTest("src/test/resources/classes/AndroidVisibleForTesting.java",
+        runTest("AndroidVisibleForTesting.java",
                 "android/before.template.kt",
                 "android/before.template.after.kt")
     }
 
     @Test
     fun testGuava() {
-        runTest("src/test/resources/classes/GuavaVisibleForTesting.java",
+        runTest("GuavaVisibleForTesting.java",
                 "guava/before.template.kt",
                 "guava/before.template.after.kt")
     }
 
     @Test
     fun testObjectGuava() {
-        runTest("src/test/resources/classes/GuavaVisibleForTesting.java",
+        runTest("GuavaVisibleForTesting.java",
                 "guava/before.object.template.kt",
                 "guava/before.object.template.after.kt")
     }
 
     fun testObjectAndroid() {
-        runTest("src/test/resources/classes/AndroidVisibleForTesting.java",
+        runTest("AndroidVisibleForTesting.java",
                 "android/before.object.template.kt",
                 "android/before.object.template.after.kt")
-    }
-
-    private fun runTest(targetClass: String, before: String, after: String) {
-        val text = File(targetClass).readText()
-        myFixture.addClass(text)
-        myFixture.configureByFile(before)
-        val action = AnnotateKtClassOrObjectMethodsIntention()
-        assertNotNull(action)
-        myFixture.launchAction(action)
-        myFixture.checkResultByFile(after)
     }
 }
