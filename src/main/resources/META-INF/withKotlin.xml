@@ -1,4 +1,4 @@
-<idea-plugin url="http://github.com/trubitsyn/idea-visiblefortesting">
+<idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
         <intentionAction>
             <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateKtClassOrObjectMethodsIntention</className>
