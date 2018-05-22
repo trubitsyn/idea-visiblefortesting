@@ -22,6 +22,7 @@ import com.intellij.openapi.editor.Editor
 import io.github.trubitsyn.visiblefortesting.annotable.KtAnnotableUtil
 import io.github.trubitsyn.visiblefortesting.annotation.AnnotationTypes
 import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
+import io.github.trubitsyn.visiblefortesting.extension.areApplicableTo
 import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationTypePopup
 import org.jetbrains.kotlin.idea.intentions.SelfTargetingIntention
 import org.jetbrains.kotlin.idea.references.mainReference
@@ -57,7 +58,7 @@ class AnnotateKtFunctionFromTestIntention : SelfTargetingIntention<KtReferenceEx
             return false
         }
 
-        if (AnnotationTypes.areApplicableTo(function, availableAnnotationTypes)) {
+        if (availableAnnotationTypes.areApplicableTo(function)) {
             if (function.containingClassOrObject != null) {
                 text = "Annotate '${function.containingClassOrObject?.name}.${function.name}' as @VisibleForTesting"
             } else {

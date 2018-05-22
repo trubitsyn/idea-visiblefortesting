@@ -23,6 +23,7 @@ import com.intellij.openapi.editor.Editor
 import io.github.trubitsyn.visiblefortesting.annotable.KtAnnotableUtil
 import io.github.trubitsyn.visiblefortesting.annotation.AnnotationTypes
 import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
+import io.github.trubitsyn.visiblefortesting.extension.areApplicableTo
 import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationTypePopup
 import org.jetbrains.kotlin.idea.intentions.SelfTargetingIntention
 import org.jetbrains.kotlin.psi.KtFunction
@@ -51,7 +52,7 @@ class AnnotateKtFunctionIntention : SelfTargetingIntention<KtModifierListOwner>(
             return false
         }
 
-        return AnnotationTypes.areApplicableTo(function, availableAnnotationTypes)
+        return availableAnnotationTypes.areApplicableTo(function)
     }
 
     override fun applyTo(element: KtModifierListOwner, editor: Editor?) {

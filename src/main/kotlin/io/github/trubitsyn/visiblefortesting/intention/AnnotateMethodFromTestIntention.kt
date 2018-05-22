@@ -27,6 +27,7 @@ import com.intellij.util.IncorrectOperationException
 import io.github.trubitsyn.visiblefortesting.annotable.PsiAnnotableUtil
 import io.github.trubitsyn.visiblefortesting.annotation.AnnotationTypes
 import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
+import io.github.trubitsyn.visiblefortesting.extension.areApplicableTo
 import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationTypePopup
 import org.jetbrains.annotations.NonNls
 
@@ -61,7 +62,7 @@ class AnnotateMethodFromTestIntention : BaseElementAtCaretIntentionAction() {
                 return false
             }
 
-            if (AnnotationTypes.areApplicableTo(method, availableAnnotationTypes)) {
+            if (availableAnnotationTypes.areApplicableTo(method)) {
                 text = "Annotate '${method.containingClass?.name}.${method.name}' as @VisibleForTesting"
                 return true
             }

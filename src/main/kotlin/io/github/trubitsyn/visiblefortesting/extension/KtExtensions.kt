@@ -16,29 +16,27 @@
 
 package io.github.trubitsyn.visiblefortesting.extension
 
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiJavaFile
-import com.intellij.psi.PsiMethod
-import com.intellij.psi.impl.source.codeStyle.ImportHelper
-import io.github.trubitsyn.visiblefortesting.annotable.PsiAnnotableUtil
+import io.github.trubitsyn.visiblefortesting.annotable.KtAnnotableUtil
 import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
+import org.jetbrains.kotlin.idea.caches.resolve.resolveImportReference
+import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.psi.KtFunction
 
-fun List<AnnotationType>.areApplicableTo(method: PsiMethod): Boolean {
-    return this.any { PsiAnnotableUtil.canAddAnnotation(method, it) }
+fun List<AnnotationType>.areApplicableTo(function: KtFunction): Boolean {
+    return this.any { KtAnnotableUtil.canAddAnnotation(function, it) }
 }
 
-fun PsiJavaFile.smartImportClass(qualifiedName: String, clazz: PsiClass?): String {
+fun KtFile.smartImportClass(qualifiedName: String): String {
     val name = qualifiedName.substringAfterLast('.')
-    val imports = importList
-            ?.importStatements
-            ?.filter { (it.qualifiedName?.endsWith(name) == true) && it.qualifiedName != qualifiedName }
+
+    val imports = importList?.imports
+            ?.filter { (it.importedFqName?.asString()?.endsWith(name) == true) && it.importedFqName?.asString() != qualifiedName }
 
     val useQualifiedName = imports != null && !imports.isEmpty()
 
-    if (!useQualifiedName) {
-        if (!ImportHelper.isAlreadyImported(this, qualifiedName)) {
-            importClass(clazz)
-        }
+    if (!useQualifiedName && findImportByAlias(qualifiedName) == null) {
+        this.resolveImportReference(FqName(qualifiedName))
     }
 
     return if (useQualifiedName) qualifiedName else name

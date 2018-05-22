@@ -23,6 +23,7 @@ import com.intellij.openapi.editor.Editor
 import io.github.trubitsyn.visiblefortesting.annotable.KtAnnotableUtil
 import io.github.trubitsyn.visiblefortesting.annotation.AnnotationTypes
 import io.github.trubitsyn.visiblefortesting.annotation.base.AnnotationType
+import io.github.trubitsyn.visiblefortesting.extension.areApplicableTo
 import io.github.trubitsyn.visiblefortesting.ui.ChooseAnnotationTypePopup
 import org.jetbrains.kotlin.idea.intentions.SelfTargetingIntention
 import org.jetbrains.kotlin.psi.KtClassOrObject
@@ -51,7 +52,7 @@ class AnnotateKtClassOrObjectMethodsIntention : SelfTargetingIntention<KtClassOr
         val functions = element.declarations.filterIsInstance(KtFunction::class.java)
         return functions
                 .asSequence()
-                .any { func -> AnnotationTypes.areApplicableTo(func, availableAnnotationTypes) }
+                .any { func -> availableAnnotationTypes.areApplicableTo(func) }
     }
 
     override fun applyTo(element: KtClassOrObject, editor: Editor?) {
@@ -66,7 +67,7 @@ class AnnotateKtClassOrObjectMethodsIntention : SelfTargetingIntention<KtClassOr
         ChooseAnnotationTypePopup(editor!!).show(availableAnnotationTypes, { annotation ->
             functions
                     .asSequence()
-                    .filter { AnnotationTypes.areApplicableTo(it, applicableAnnotations) }
+                    .filter { applicableAnnotations.areApplicableTo(it) }
                     .forEach { KtAnnotableUtil.addAnnotation(it, annotation) }
         })
     }

@@ -5,7 +5,7 @@
     <idea-version since-build="145"/>
 
     <depends>com.intellij.modules.java</depends>
-    <depends>org.jetbrains.kotlin</depends>
+    <depends optional="true" config-file="withKotlin.xml">org.jetbrains.kotlin</depends>
 
     <description><![CDATA[
         <p>@VisibleForTesting annotation support for the IntelliJ platform.</p>
@@ -56,16 +56,6 @@
         </intentionAction>
         <intentionAction>
             <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateMethodFromTestIntention</className>
-        </intentionAction>
-
-        <intentionAction>
-            <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateKtClassOrObjectMethodsIntention</className>
-        </intentionAction>
-        <intentionAction>
-            <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateKtFunctionIntention</className>
-        </intentionAction>
-        <intentionAction>
-            <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateKtFunctionFromTestIntention</className>
         </intentionAction>
     </extensions>
 
