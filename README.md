@@ -12,6 +12,7 @@ Now you don't have to: plugin will do that for you.
 
 * [android.support.annotation.VisibleForTesting](https://developer.android.com/reference/android/support/annotation/VisibleForTesting.html)
 * [com.google.common.annotations.VisibleForTesting](https://google.github.io/guava/releases/19.0/api/docs/com/google/common/annotations/VisibleForTesting.html)
+* [org.apache.flink.annotation.VisibleForTesting](https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/annotation/VisibleForTesting.html)
 
 ## Prerequisites
 
