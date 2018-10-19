@@ -43,7 +43,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        Added support for Kotlin programming language.
+        <ul>
+            <li>Added support for @org.apache.flink.annotation.VisibleForTesting</li>
+            <li>Kotlin dependency is now optional</li>
+            <li>Fixed class cast errors</li>
+        </ul>
     ]]>
     </change-notes>
 
