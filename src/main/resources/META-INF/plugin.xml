@@ -54,13 +54,13 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <intentionAction>
-            <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateClassMethodsIntention</className>
+            <className>org.trubitsyn.visiblefortesting.intention.AnnotateClassMethodsIntention</className>
         </intentionAction>
         <intentionAction>
-            <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateMethodIntention</className>
+            <className>org.trubitsyn.visiblefortesting.intention.AnnotateMethodIntention</className>
         </intentionAction>
         <intentionAction>
-            <className>io.github.trubitsyn.visiblefortesting.intention.AnnotateMethodFromTestIntention</className>
+            <className>org.trubitsyn.visiblefortesting.intention.AnnotateMethodFromTestIntention</className>
         </intentionAction>
     </extensions>
 </idea-plugin>
