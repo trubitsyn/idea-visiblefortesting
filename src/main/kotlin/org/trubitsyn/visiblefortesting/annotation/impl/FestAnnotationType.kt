@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Nikola Trubitsyn
+ * Copyright 2019 Nikola Trubitsyn
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,8 @@
  * limitations under the License.
  */
 
-package org.trubitsyn.visiblefortesting.annotation
+package org.trubitsyn.visiblefortesting.annotation.impl
 
-import com.intellij.openapi.project.Project
-import org.trubitsyn.visiblefortesting.annotation.impl.*
+import org.trubitsyn.visiblefortesting.annotation.base.AnnotationType
 
-object AnnotationTypes {
-    private val annotations = setOf(
-            AndroidAnnotationType(),
-            GuavaAnnotationType(),
-            FlinkAnnotationType(),
-            AssertJAnnotationType(),
-            FestAnnotationType()
-    )
-
-    fun available(project: Project) = annotations.filter { it.isAvailable(project) }
-}
+class FestAnnotationType : AnnotationType("VisibleForTesting", "org.fest.util.VisibleForTesting")
