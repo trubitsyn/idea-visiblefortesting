@@ -13,6 +13,8 @@ Now you don't have to: plugin will do that for you.
 * [android.support.annotation.VisibleForTesting](https://developer.android.com/reference/android/support/annotation/VisibleForTesting.html)
 * [com.google.common.annotations.VisibleForTesting](https://google.github.io/guava/releases/19.0/api/docs/com/google/common/annotations/VisibleForTesting.html)
 * [org.apache.flink.annotation.VisibleForTesting](https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/annotation/VisibleForTesting.html)
+* [org.assertj.core.util.VisibleForTesting](https://joel-costigliola.github.io/assertj/core/api/org/assertj/core/util/VisibleForTesting.html)
+* [org.fest.util.VisibleForTesting](https://github.com/alexruiz/fest-util/blob/master/src/main/java/org/fest/util/VisibleForTesting.java)
 
 ## Prerequisites
 
@@ -69,7 +71,7 @@ Supported programming languages: Java, Kotlin. Please note: Java methods cannot 
 ## LICENSE
 
 ```
-Copyright 2017, 2018 Nikola Trubitsyn
+Copyright 2017-2019 Nikola Trubitsyn
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

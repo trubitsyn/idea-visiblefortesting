@@ -17,6 +17,8 @@
             <li><a href="https://developer.android.com/reference/android/support/annotation/VisibleForTesting.html">android.support.annotation.VisibleForTesting</a></li>
             <li><a href="https://google.github.io/guava/releases/19.0/api/docs/com/google/common/annotations/VisibleForTesting.html">com.google.common.annotations.VisibleForTesting</a></li>
             <li><a href="https://ci.apache.org/projects/flink/flink-docs-master/api/java/org/apache/flink/annotation/VisibleForTesting.html">org.apache.flink.annotation.VisibleForTesting</a></li>
+            <li><a href="https://joel-costigliola.github.io/assertj/core/api/org/assertj/core/util/VisibleForTesting.html">org.assertj.core.util.VisibleForTesting</a></li>
+            <li><a href="https://github.com/alexruiz/fest-util/blob/master/src/main/java/org/fest/util/VisibleForTesting.java">org.fest.util.VisibleForTesting</a></li>
         </ul>
         <h1>Prerequisites</h1>
         <p>The desired annotation type must be accessible in order for intention actions to be shown.</p>
@@ -45,9 +47,8 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>Added support for @org.apache.flink.annotation.VisibleForTesting</li>
-            <li>Kotlin dependency is now optional</li>
-            <li>Fixed class cast errors</li>
+            <li>Added support for @org.assertj.core.util.VisibleForTesting</li>
+            <li>Added support for @org.fest.util.VisibleForTesting</li>
         </ul>
     ]]>
     </change-notes>
