@@ -21,6 +21,7 @@ import org.trubitsyn.visiblefortesting.annotation.impl.*
 
 object AnnotationTypes {
     private val annotations = setOf(
+            AndroidXAnnotationType(),
             AndroidAnnotationType(),
             GuavaAnnotationType(),
             FlinkAnnotationType(),
